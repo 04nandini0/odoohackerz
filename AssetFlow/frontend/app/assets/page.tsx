@@ -27,10 +27,10 @@ export default function AssetsPage() {
         className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
       >
         <div>
-          <h1 className="text-3xl font-semibold tracking-tight text-white mb-1">
+          <h1 className="text-3xl font-semibold tracking-tight text-slate-900 mb-1">
             Assets Directory
           </h1>
-          <p className="text-zinc-400">Manage and track your organization's assets.</p>
+          <p className="text-slate-500">Manage and track your organization's assets.</p>
         </div>
         
         {canRegister && (

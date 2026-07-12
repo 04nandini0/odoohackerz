@@ -1,5 +1,8 @@
 import './globals.css'
 import ClientLayout from '@/components/ui/ClientLayout'
+import { Inter } from 'next/font/google'
+
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
   title: 'AssetFlow',
@@ -13,7 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body className={inter.className}>
         <ClientLayout>{children}</ClientLayout>
       </body>
     </html>

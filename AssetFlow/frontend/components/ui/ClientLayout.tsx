@@ -5,7 +5,7 @@ import Sidebar from '@/components/ui/Sidebar';
 import { AnimatePresence, motion } from 'framer-motion';
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
+  const pathname = usePathname() || '';
   const isAuthPage = pathname.startsWith('/login') || pathname.startsWith('/signup');
 
   return (

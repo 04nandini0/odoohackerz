@@ -60,9 +60,9 @@ export const useAssetStore = create<AssetState>((set, get) => ({
       });
       
       const response = await apiClient.get<any>(`/assets?${queryParams.toString()}`);
-      set({ assets: response.data, isLoading: false });
+      set({ assets: Array.isArray(response) ? response : (response.data || []), isLoading: false });
     } catch (error: any) {
-      set({ error: error.response?.data?.error || 'Failed to fetch assets', isLoading: false });
+      set({ error: error.message || 'Failed to fetch assets', isLoading: false });
     }
   },
 
@@ -70,16 +70,16 @@ export const useAssetStore = create<AssetState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await apiClient.get<any>(`/assets/${id}`);
-      set({ currentAsset: response.data, isLoading: false });
+      set({ currentAsset: response, isLoading: false });
     } catch (error: any) {
-      set({ error: error.response?.data?.error || 'Failed to fetch asset', isLoading: false });
+      set({ error: error.message || 'Failed to fetch asset', isLoading: false });
     }
   },
 
   fetchAssetHistory: async (id) => {
     try {
       const response = await apiClient.get<any>(`/assets/${id}/history`);
-      set({ history: response.data });
+      set({ history: response });
     } catch (error: any) {
       console.error('Failed to fetch history', error);
     }
@@ -88,9 +88,9 @@ export const useAssetStore = create<AssetState>((set, get) => ({
   createAsset: async (data) => {
     try {
       const response = await apiClient.post<any>('/assets', data);
-      return response.data;
+      return response;
     } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Failed to register asset');
+      throw new Error(error.message || 'Failed to register asset');
     }
   },
 
@@ -98,9 +98,9 @@ export const useAssetStore = create<AssetState>((set, get) => ({
     try {
       const response = await apiClient.put<any>(`/assets/${id}`, data);
       await get().fetchAssetById(id);
-      return response.data;
+      return response;
     } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Failed to update asset');
+      throw new Error(error.message || 'Failed to update asset');
     }
   },
 
@@ -114,9 +114,9 @@ export const useAssetStore = create<AssetState>((set, get) => ({
           'Content-Type': 'multipart/form-data'
         }
       });
-      return response.data.url;
+      return response.url;
     } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Failed to upload photo');
+      throw new Error(error.message || 'Failed to upload photo');
     }
   }
 }));

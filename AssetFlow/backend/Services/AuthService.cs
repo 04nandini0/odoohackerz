@@ -48,7 +48,7 @@ public class AuthService : IAuthService
         var employee = await _employeeRepository.FindByEmailAsync(request.Email);
         if (employee == null || !BCrypt.Net.BCrypt.Verify(request.Password, employee.PasswordHash))
         {
-            throw new Exception("Invalid email or password.");
+            throw new UnauthorizedAccessException("Invalid email or password.");
         }
 
         if (employee.Status == EmployeeStatus.Inactive)
@@ -128,16 +128,23 @@ public class AuthService : IAuthService
             return string.Empty;
         }
 
-        // Generate a simple token for demo purposes. In production, this should be cryptographically secure and hashed.
-        var resetToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+        // Generate a 6-digit numeric OTP
+        var otp = RandomNumberGenerator.GetInt32(100000, 999999).ToString();
         
-        employee.ResetPasswordToken = resetToken; // Usually store a hash of this!
-        employee.ResetPasswordTokenExpiry = DateTime.UtcNow.AddHours(1);
+        employee.ResetPasswordToken = otp; // Usually store a hash of this!
+        employee.ResetPasswordTokenExpiry = DateTime.UtcNow.AddMinutes(15);
         
         await _employeeRepository.UpdateAsync(employee.Id, employee);
 
-        // TODO: In production, email this token instead of returning it!
-        return resetToken;
+        // Simulate sending email
+        Console.WriteLine("\n==================================================");
+        Console.WriteLine($"[EMAIL SIMULATOR] To: {request.Email}");
+        Console.WriteLine($"[EMAIL SIMULATOR] Subject: Password Reset OTP");
+        Console.WriteLine($"[EMAIL SIMULATOR] Body: Your one-time password (OTP) is: {otp}");
+        Console.WriteLine($"[EMAIL SIMULATOR] This OTP will expire in 15 minutes.");
+        Console.WriteLine("==================================================\n");
+
+        return string.Empty; // Don't return the OTP in the API response!
     }
 
     public async Task ResetPasswordAsync(ResetPasswordRequest request)

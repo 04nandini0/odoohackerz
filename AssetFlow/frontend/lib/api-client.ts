@@ -11,6 +11,13 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
 
   const response = await fetch(`/api${endpoint}`, { ...options, headers });
   if (!response.ok) {
+    if (response.status === 401 && endpoint !== '/auth/login' && typeof window !== "undefined") {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("userRole");
+      window.location.href = "/login";
+      // Return a pending promise to halt execution and prevent Unhandled Runtime Errors during navigation
+      return new Promise(() => {}) as Promise<T>;
+    }
     const errorText = await response.text();
     throw new Error(errorText || response.statusText);
   }

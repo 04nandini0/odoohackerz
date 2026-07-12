@@ -79,9 +79,9 @@ export default function AssetDetailsPage() {
 
           <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6 border border-gray-200 dark:border-gray-700">
             <h2 className="text-xl font-semibold mb-4 border-b pb-2">Category Specific Details</h2>
-            {Object.keys(currentAsset.customFieldValues).length > 0 ? (
+            {Object.keys(currentAsset.customFieldValues || {}).length > 0 ? (
               <div className="grid grid-cols-2 gap-4">
-                {Object.entries(currentAsset.customFieldValues).map(([key, value]) => (
+                {Object.entries(currentAsset.customFieldValues || {}).map(([key, value]) => (
                   <div key={key}>
                     <p className="text-sm text-gray-500">{key}</p>
                     <p className="font-medium">{value}</p>

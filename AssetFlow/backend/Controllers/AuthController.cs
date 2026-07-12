@@ -48,9 +48,8 @@ public class AuthController : ControllerBase
     [HttpPost("forgot-password")]
     public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
     {
-        var resetToken = await _authService.ForgotPasswordAsync(request);
-        // HACKATHON TODO: Email this token instead of returning it directly in the response!
-        return Ok(new { message = "Password reset instructions have been sent.", resetToken = resetToken });
+        await _authService.ForgotPasswordAsync(request);
+        return Ok(new { message = "Password reset instructions have been sent to your email." });
     }
 
     [HttpPost("reset-password")]

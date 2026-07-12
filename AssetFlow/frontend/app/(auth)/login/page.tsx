@@ -1,14 +1,17 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
 import { motion } from "framer-motion";
 import { Shield, ArrowRight, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const registered = searchParams.get('registered') === 'true';
+  
   const login = useAuthStore((state) => state.login);
   const [email, setEmail] = useState("admin@assetflow.local");
   const [password, setPassword] = useState("Admin@123");
@@ -30,9 +33,9 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-background relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-slate-50 relative overflow-hidden">
       {/* Premium subtle background glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-primary-500/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-primary-100 rounded-full blur-[120px] pointer-events-none" />
       
       <motion.div 
         initial={{ opacity: 0, y: 10 }}
@@ -40,15 +43,26 @@ export default function LoginPage() {
         transition={{ duration: 0.4, ease: "easeOut" }}
         className="w-full max-w-md relative z-10"
       >
-        <div className="glass-card p-8">
+        <div className="glass-card p-8 shadow-float">
           <div className="text-center mb-8">
-            <div className="w-16 h-16 mx-auto bg-primary-500/10 rounded-2xl flex items-center justify-center mb-4 border border-primary-500/20 shadow-inner shadow-primary-500/10">
-              <Shield className="w-8 h-8 text-primary-400" />
+            <div className="w-16 h-16 mx-auto bg-primary-50 border border-primary-100 rounded-2xl flex items-center justify-center mb-4 shadow-sm shadow-primary-500/10">
+              <Shield className="w-8 h-8 text-primary-600" />
             </div>
-            <h1 className="text-2xl font-semibold tracking-tight text-white mb-2">Welcome Back</h1>
-            <p className="text-zinc-400">Sign in to manage your corporate assets</p>
+            <h1 className="text-2xl font-semibold tracking-tight text-slate-900 mb-2">Welcome Back</h1>
+            <p className="text-slate-500">Sign in to manage your corporate assets</p>
           </div>
           
+          {registered && (
+            <motion.div 
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 p-4 rounded-xl mb-6 text-sm flex items-center gap-2"
+            >
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+              Account created successfully. Please sign in.
+            </motion.div>
+          )}
+
           {error && (
             <motion.div 
               initial={{ opacity: 0, height: 0 }}
@@ -62,26 +76,35 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-zinc-300 ml-1">Email address</label>
+              <label className="text-sm font-medium text-slate-700 ml-1">Email address</label>
               <div className="relative group">
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-surface-100/50 border border-white/5 rounded-xl px-4 py-2.5 text-white placeholder:text-zinc-500 focus:outline-none focus:border-primary-500/50 focus:ring-4 focus:ring-primary-500/10 focus:bg-surface-50 transition-all"
+                  className="w-full bg-white border border-border rounded-xl px-4 py-2.5 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 transition-all shadow-sm"
                   required
                 />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-zinc-300 ml-1">Password</label>
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-medium text-slate-700 ml-1">Password</label>
+                <button 
+                  type="button" 
+                  onClick={() => router.push('/forgot-password')} 
+                  className="text-primary-600 hover:text-primary-700 text-sm font-medium transition-colors"
+                >
+                  Forgot Password?
+                </button>
+              </div>
               <div className="relative group">
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-surface-100/50 border border-white/5 rounded-xl px-4 py-2.5 text-white placeholder:text-zinc-500 focus:outline-none focus:border-primary-500/50 focus:ring-4 focus:ring-primary-500/10 focus:bg-surface-50 transition-all"
+                  className="w-full bg-white border border-border rounded-xl px-4 py-2.5 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 transition-all shadow-sm"
                   required
                 />
               </div>
@@ -107,9 +130,27 @@ export default function LoginPage() {
                 </>
               )}
             </button>
+            <div className="text-center mt-4">
+              <span className="text-slate-500 text-sm">Don't have an account? </span>
+              <button 
+                type="button" 
+                onClick={() => router.push('/signup')} 
+                className="text-primary-600 hover:text-primary-700 font-medium text-sm transition-colors"
+              >
+                Create Account
+              </button>
+            </div>
           </form>
         </div>
       </motion.div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-slate-50 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary-600" /></div>}>
+      <LoginForm />
+    </Suspense>
   );
 }

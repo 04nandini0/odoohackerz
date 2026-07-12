@@ -9,23 +9,31 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: '#09090b', // Deep charcoal / Zinc 950
-        foreground: '#fafafa', // Zinc 50
+        background: '#ffffff', // Clean white background
+        foreground: '#0f172a', // Slate 900 text
         primary: {
-          50: '#eef2ff',
-          100: '#e0e7ff',
-          400: '#818cf8',
-          500: '#6366f1', // Premium Indigo
-          600: '#4f46e5',
-          700: '#4338ca',
-          900: '#312e81',
+          50: '#eff6ff',
+          100: '#dbeafe',
+          400: '#60a5fa',
+          500: '#3b82f6',
+          600: '#2563eb', // milliai.tech Blue
+          700: '#1d4ed8',
+          900: '#1e3a8a',
         },
         surface: {
-          50: '#18181b', // Zinc 900
-          100: '#27272a', // Zinc 800
-          200: '#3f3f46', // Zinc 700
-          300: '#52525b', // Zinc 600
-        }
+          50: '#f8fafc', // Slate 50
+          100: '#f1f5f9', // Slate 100
+          200: '#e2e8f0', // Slate 200
+          300: '#cbd5e1', // Slate 300
+        },
+        border: '#e2e8f0', // Standard border color
+      },
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+      },
+      boxShadow: {
+        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+        'float': '0 10px 30px -5px rgba(37, 99, 235, 0.15)',
       },
       backgroundImage: {},
       animation: {

@@ -66,9 +66,9 @@ export const useOrganizationStore = create<OrganizationState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await apiClient.get<any>('/departments');
-      set({ departments: response.data, isLoading: false });
+      set({ departments: Array.isArray(response) ? response : (response.data || []), isLoading: false });
     } catch (error: any) {
-      set({ error: error.response?.data?.error || 'Failed to fetch departments', isLoading: false });
+      set({ error: error.message || 'Failed to fetch departments', isLoading: false });
     }
   },
 
@@ -77,7 +77,7 @@ export const useOrganizationStore = create<OrganizationState>((set, get) => ({
       await apiClient.post<any>('/departments', data);
       await get().fetchDepartments();
     } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Failed to create department');
+      throw new Error(error.message || 'Failed to create department');
     }
   },
 
@@ -87,7 +87,7 @@ export const useOrganizationStore = create<OrganizationState>((set, get) => ({
       await get().fetchDepartments();
       await get().fetchEmployees(); // Because department names might change
     } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Failed to update department');
+      throw new Error(error.message || 'Failed to update department');
     }
   },
 
@@ -96,7 +96,7 @@ export const useOrganizationStore = create<OrganizationState>((set, get) => ({
       await apiClient.delete<any>(`/departments/${id}`);
       await get().fetchDepartments();
     } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Failed to deactivate department');
+      throw new Error(error.message || 'Failed to deactivate department');
     }
   },
 
@@ -104,9 +104,9 @@ export const useOrganizationStore = create<OrganizationState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await apiClient.get<any>('/asset-categories');
-      set({ assetCategories: response.data, isLoading: false });
+      set({ assetCategories: Array.isArray(response) ? response : (response.data || []), isLoading: false });
     } catch (error: any) {
-      set({ error: error.response?.data?.error || 'Failed to fetch asset categories', isLoading: false });
+      set({ error: error.message || 'Failed to fetch asset categories', isLoading: false });
     }
   },
 
@@ -115,7 +115,7 @@ export const useOrganizationStore = create<OrganizationState>((set, get) => ({
       await apiClient.post<any>('/asset-categories', data);
       await get().fetchAssetCategories();
     } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Failed to create asset category');
+      throw new Error(error.message || 'Failed to create asset category');
     }
   },
 
@@ -124,7 +124,7 @@ export const useOrganizationStore = create<OrganizationState>((set, get) => ({
       await apiClient.put<any>(`/asset-categories/${id}`, data);
       await get().fetchAssetCategories();
     } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Failed to update asset category');
+      throw new Error(error.message || 'Failed to update asset category');
     }
   },
 
@@ -133,7 +133,7 @@ export const useOrganizationStore = create<OrganizationState>((set, get) => ({
       await apiClient.delete<any>(`/asset-categories/${id}`);
       await get().fetchAssetCategories();
     } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Failed to delete asset category');
+      throw new Error(error.message || 'Failed to delete asset category');
     }
   },
 
@@ -145,9 +145,9 @@ export const useOrganizationStore = create<OrganizationState>((set, get) => ({
       if (role) url += `role=${role}&`;
       
       const response = await apiClient.get<any>(url);
-      set({ employees: response.data, isLoading: false });
+      set({ employees: Array.isArray(response) ? response : (response.data || []), isLoading: false });
     } catch (error: any) {
-      set({ error: error.response?.data?.error || 'Failed to fetch employees', isLoading: false });
+      set({ error: error.message || 'Failed to fetch employees', isLoading: false });
     }
   },
 
@@ -156,7 +156,7 @@ export const useOrganizationStore = create<OrganizationState>((set, get) => ({
       await apiClient.put<any>(`/employees/${id}/status`, { status });
       await get().fetchEmployees();
     } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Failed to toggle employee status');
+      throw new Error(error.message || 'Failed to toggle employee status');
     }
   },
 
@@ -165,7 +165,7 @@ export const useOrganizationStore = create<OrganizationState>((set, get) => ({
       await apiClient.post<any>(`/employees/${id}/promote`, { newRole });
       await get().fetchEmployees();
     } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Failed to promote employee');
+      throw new Error(error.message || 'Failed to promote employee');
     }
   }
 }));
