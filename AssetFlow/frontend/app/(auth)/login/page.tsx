@@ -6,4 +6,4 @@ export default function Page() {
             {/* TODO: implement */}
         </div>
     );
-}\n
+}

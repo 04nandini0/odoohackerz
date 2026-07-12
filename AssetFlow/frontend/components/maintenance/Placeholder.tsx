@@ -2,4 +2,4 @@
 export function Placeholder() {
     // TODO: implement
     return <div>Placeholder</div>;
-}\n
+}

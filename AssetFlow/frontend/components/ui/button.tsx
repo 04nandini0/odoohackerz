@@ -2,4 +2,4 @@
 export function Button() {
     // TODO: implement
     return <button>Click me</button>;
-}\n
+}
