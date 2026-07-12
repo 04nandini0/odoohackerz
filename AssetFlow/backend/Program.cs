@@ -36,12 +36,19 @@ builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<IAssetCategoryRepository, AssetCategoryRepository>();
 builder.Services.AddScoped<IAssetRepository, AssetRepository>();
 builder.Services.AddScoped<IActivityLogRepository, ActivityLogRepository>();
+builder.Services.AddScoped<ICounterRepository, CounterRepository>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IActivityLogService, ActivityLogService>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IAssetCategoryService, AssetCategoryService>();
 builder.Services.AddScoped<IEmployeeDirectoryService, EmployeeDirectoryService>();
+builder.Services.AddScoped<IStorageService, StorageService>();
+builder.Services.AddScoped<IQRCodeService, QRCodeService>();
+builder.Services.AddScoped<IAssetLifecycleService, AssetLifecycleService>();
+builder.Services.AddScoped<IAssetService, AssetService>();
+
+builder.Services.Configure<MinIOConfig>(builder.Configuration.GetSection("MinIO"));
 
 // --- JWT Authentication ---
 var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>() ?? new JwtSettings();
@@ -190,6 +197,55 @@ using (var scope = app.Services.CreateScope())
             Status = EmployeeStatus.Active,
             DepartmentId = engDept?.Id
         }).Wait();
+    }
+
+    // Seed Mock Assets
+    var assetRepo = scope.ServiceProvider.GetRequiredService<IAssetRepository>();
+    var counterRepo = scope.ServiceProvider.GetRequiredService<ICounterRepository>();
+    
+    if (assetRepo.GetAllAsync().Result.Count() == 0)
+    {
+        var electronics = catRepo.FindByNameAsync("Electronics").Result;
+        var furniture = catRepo.FindByNameAsync("Furniture").Result;
+        var vehicles = catRepo.FindByNameAsync("Vehicles").Result;
+
+        var CreateMockAsset = (string name, string catId, Dictionary<string,string> customFields, AssetStatus status) => {
+            var seq = counterRepo.GetNextSequenceValueAsync("assetTag").Result;
+            return new Asset
+            {
+                Tag = $"AF-{seq:D4}",
+                Name = name,
+                CategoryId = catId,
+                CustomFieldValues = customFields,
+                Status = status,
+                Location = "Main Office",
+                AcquisitionDate = DateTime.UtcNow.AddDays(-100),
+                AcquisitionCost = 1500.00m,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+        };
+
+        if (electronics != null)
+        {
+            assetRepo.CreateAsync(CreateMockAsset("MacBook Pro 16", electronics.Id, new Dictionary<string, string> { { "Warranty Period (months)", "36" } }, AssetStatus.Available)).Wait();
+            assetRepo.CreateAsync(CreateMockAsset("Dell XPS 15", electronics.Id, new Dictionary<string, string> { { "Warranty Period (months)", "12" } }, AssetStatus.Allocated)).Wait();
+            assetRepo.CreateAsync(CreateMockAsset("Samsung Odyssey Monitor", electronics.Id, new Dictionary<string, string> { { "Warranty Period (months)", "24" } }, AssetStatus.UnderMaintenance)).Wait();
+        }
+
+        if (furniture != null)
+        {
+            assetRepo.CreateAsync(CreateMockAsset("Ergonomic Chair", furniture.Id, new Dictionary<string, string>(), AssetStatus.Available)).Wait();
+            assetRepo.CreateAsync(CreateMockAsset("Standing Desk", furniture.Id, new Dictionary<string, string>(), AssetStatus.Available)).Wait();
+        }
+
+        if (vehicles != null)
+        {
+            assetRepo.CreateAsync(CreateMockAsset("Company Van", vehicles.Id, new Dictionary<string, string> { { "Registration Number", "ABC-1234" } }, AssetStatus.Available)).Wait();
+            assetRepo.CreateAsync(CreateMockAsset("Executive Car", vehicles.Id, new Dictionary<string, string> { { "Registration Number", "XYZ-9876" } }, AssetStatus.Retired)).Wait();
+        }
+
+        Console.WriteLine("Seeded mock assets.");
     }
 }
 

@@ -33,8 +33,10 @@ public class GlobalExceptionHandler
         
         var statusCode = exception switch
         {
-            UnauthorizedAccessException => (int)HttpStatusCode.Forbidden,
             ArgumentException => (int)HttpStatusCode.BadRequest,
+            UnauthorizedAccessException => (int)HttpStatusCode.Unauthorized,
+            InvalidOperationException => (int)HttpStatusCode.Conflict,
+            AssetFlow.Services.InvalidTransitionException => (int)HttpStatusCode.Conflict,
             _ => (int)HttpStatusCode.InternalServerError
         };
 
