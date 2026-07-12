@@ -12,18 +12,19 @@ public class ActivityLogService : IActivityLogService
         _activityLogRepository = activityLogRepository;
     }
 
-    public async Task LogAsync(string action, string description, string? performedByEmployeeId = null, string? targetEntityId = null, string? details = null)
+    public async Task LogAsync(string userId, string action, string entityType, string entityId, Dictionary<string, string>? details = null)
     {
         var log = new ActivityLog
         {
+            UserId = userId,
             Action = action,
-            Description = description,
-            PerformedByEmployeeId = performedByEmployeeId,
-            TargetEntityId = targetEntityId,
-            Details = details,
+            EntityType = entityType,
+            EntityId = entityId,
+            Details = details ?? new Dictionary<string, string>(),
             Timestamp = DateTime.UtcNow
         };
 
+        // Note: The original ActivityLogRepository might need to be adjusted if it was strongly typed to the old entity properties
         await _activityLogRepository.CreateAsync(log);
     }
 }

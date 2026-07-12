@@ -1,4 +1,3 @@
-// Domain entity representing a ActivityLog in the MongoDB database.
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -10,22 +9,22 @@ public class ActivityLog
     [BsonRepresentation(BsonType.ObjectId)]
     public string Id { get; set; } = string.Empty;
 
+    [BsonElement("userId")]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string UserId { get; set; } = string.Empty;
+
     [BsonElement("action")]
-    public string Action { get; set; } = string.Empty; // e.g., "PromoteEmployee", "CreateDepartment"
+    public string Action { get; set; } = string.Empty;
 
-    [BsonElement("description")]
-    public string Description { get; set; } = string.Empty;
+    [BsonElement("entityType")]
+    public string EntityType { get; set; } = string.Empty;
 
-    [BsonElement("performedByEmployeeId")]
+    [BsonElement("entityId")]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string? PerformedByEmployeeId { get; set; }
-
-    [BsonElement("targetEntityId")]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public string? TargetEntityId { get; set; }
+    public string EntityId { get; set; } = string.Empty;
 
     [BsonElement("details")]
-    public string? Details { get; set; } // JSON or simple string with old/new roles
+    public Dictionary<string, string> Details { get; set; } = new();
 
     [BsonElement("timestamp")]
     public DateTime Timestamp { get; set; } = DateTime.UtcNow;

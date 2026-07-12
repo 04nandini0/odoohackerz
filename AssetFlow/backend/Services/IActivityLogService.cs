@@ -1,6 +1,8 @@
+using AssetFlow.Models;
+
 namespace AssetFlow.Services;
 
 public interface IActivityLogService
 {
-    Task LogAsync(string action, string description, string? performedByEmployeeId = null, string? targetEntityId = null, string? details = null);
+    Task LogAsync(string userId, string action, string entityType, string entityId, Dictionary<string, string>? details = null);
 }

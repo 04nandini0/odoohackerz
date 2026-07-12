@@ -1,10 +1,13 @@
 // Main entry point for configuring the ASP.NET Core web application, services, and middleware.
 using AssetFlow.Config;
+using AssetFlow.Hubs;
 using AssetFlow.Middleware;
 using AssetFlow.Models;
 using AssetFlow.Repositories;
 using AssetFlow.Services;
+using StackExchange.Redis;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -23,7 +26,7 @@ builder.Services.AddSingleton<IMongoClient>(sp =>
     var config = sp.GetRequiredService<IOptions<MongoConfig>>().Value;
     return new MongoClient(config.ConnectionString);
 });
-builder.Services.AddScoped<IMongoDatabase>(sp =>
+builder.Services.AddSingleton<IMongoDatabase>(sp =>
 {
     var config = sp.GetRequiredService<IOptions<MongoConfig>>().Value;
     var client = sp.GetRequiredService<IMongoClient>();
@@ -31,24 +34,36 @@ builder.Services.AddScoped<IMongoDatabase>(sp =>
 });
 
 // --- Repositories & Services ---
-builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
-builder.Services.AddScoped<IAssetCategoryRepository, AssetCategoryRepository>();
-builder.Services.AddScoped<IAllocationRepository, AllocationRepository>();
-builder.Services.AddScoped<ITransferRepository, TransferRepository>();
-builder.Services.AddScoped<IBookingRepository, BookingRepository>();
-builder.Services.AddScoped<ICounterRepository, CounterRepository>();
+builder.Services.AddSingleton<IDepartmentRepository, DepartmentRepository>();
+builder.Services.AddSingleton<IEmployeeRepository, EmployeeRepository>();
+builder.Services.AddSingleton<ICounterRepository, CounterRepository>();
+builder.Services.AddSingleton<IAssetCategoryRepository, AssetCategoryRepository>();
+builder.Services.AddSingleton<IAssetRepository, AssetRepository>();
+builder.Services.AddSingleton<IAllocationRepository, AllocationRepository>();
+builder.Services.AddSingleton<ITransferRepository, TransferRepository>();
+builder.Services.AddSingleton<IBookingRepository, BookingRepository>();
+builder.Services.AddSingleton<IMaintenanceRepository, MaintenanceRepository>();
+builder.Services.AddSingleton<INotificationRepository, NotificationRepository>();
+builder.Services.AddSingleton<IActivityLogRepository, ActivityLogRepository>();
 
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IActivityLogService, ActivityLogService>();
-builder.Services.AddScoped<IDepartmentService, DepartmentService>();
-builder.Services.AddScoped<IAssetCategoryService, AssetCategoryService>();
-builder.Services.AddScoped<IEmployeeDirectoryService, EmployeeDirectoryService>();
+// Services
+builder.Services.AddSingleton<IAuthService, AuthService>();
+builder.Services.AddSingleton<IAssetLifecycleService, AssetLifecycleService>();
+builder.Services.AddSingleton<IAllocationService, AllocationService>();
+builder.Services.AddSingleton<ITransferService, TransferService>();
+builder.Services.AddSingleton<IBookingService, BookingService>();
+builder.Services.AddSingleton<IMaintenanceService, MaintenanceService>();
+builder.Services.AddSingleton<INotificationService, NotificationService>();
+builder.Services.AddSingleton<IActivityLogService, ActivityLogService>();
+
+// SignalR and Redis
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<IConnectionMultiplexer>(sp => 
+    ConnectionMultiplexer.Connect(builder.Configuration.GetValue<string>("Redis:ConnectionString") ?? "localhost:6379"));
+
 builder.Services.AddScoped<IStorageService, StorageService>();
 builder.Services.AddScoped<IQRCodeService, QRCodeService>();
-builder.Services.AddScoped<IAssetLifecycleService, AssetLifecycleService>();
 builder.Services.AddScoped<IAssetService, AssetService>();
-builder.Services.AddScoped<IAllocationService, AllocationService>();
 builder.Services.AddScoped<ITransferService, TransferService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
 
@@ -311,6 +326,37 @@ using (var scope = app.Services.CreateScope())
         }
         Console.WriteLine("Seeded mock bookings.");
     }
+
+    var maintRepo = scope.ServiceProvider.GetRequiredService<IMaintenanceRepository>();
+    if (maintRepo.GetAllAsync().Result.Count() == 0)
+    {
+        var allAssets = assetRepo.GetAllAsync().Result;
+        var allEmployees = employeeRepoForSeed.GetAllAsync().Result;
+        var admin = allEmployees.FirstOrDefault(e => e.Role == EmployeeRole.Admin);
+        var employee = allEmployees.FirstOrDefault(e => e.Role == EmployeeRole.Employee);
+        var monitor = allAssets.FirstOrDefault(a => a.Name.Contains("Monitor"));
+
+        if (employee != null && monitor != null && admin != null)
+        {
+            maintRepo.CreateAsync(new MaintenanceRequest { AssetId = monitor.Id, RaisedBy = employee.Id, Issue = "Screen flickering", Priority = MaintenancePriority.High, Status = MaintenanceStatus.Pending }).Wait();
+            
+            // Seed a resolved one to show history
+            maintRepo.CreateAsync(new MaintenanceRequest { AssetId = monitor.Id, RaisedBy = employee.Id, Issue = "Dead pixels", Priority = MaintenancePriority.Medium, Status = MaintenanceStatus.Resolved, ResolvedAt = DateTime.UtcNow.AddDays(-2), ResolutionNotes = "Replaced panel" }).Wait();
+        }
+        Console.WriteLine("Seeded mock maintenance requests.");
+    }
+
+    var notifRepo = scope.ServiceProvider.GetRequiredService<INotificationRepository>();
+    if (notifRepo.GetByUserIdAsync(employeeRepoForSeed.FindByEmailAsync("john@assetflow.local").Result?.Id ?? "", false).Result.Count() == 0)
+    {
+        var admin = employeeRepoForSeed.FindByEmailAsync("john@assetflow.local").Result;
+        if (admin != null)
+        {
+            notifRepo.CreateAsync(new Notification { UserId = admin.Id, Type = NotificationType.TransferApproved, Message = "Transfer request for MacBook Pro 16 approved.", Read = false, CreatedAt = DateTime.UtcNow.AddMinutes(-5) }).Wait();
+            notifRepo.CreateAsync(new Notification { UserId = admin.Id, Type = NotificationType.OverdueReturnAlert, Message = "Company Van return is overdue.", Read = true, CreatedAt = DateTime.UtcNow.AddDays(-1) }).Wait();
+        }
+        Console.WriteLine("Seeded mock notifications.");
+    }
 }
 
 // --- Middleware Pipeline ---
@@ -328,5 +374,6 @@ if (app.Environment.IsDevelopment())
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapHub<NotificationHub>("/hubs/notifications");
 
 app.Run();
