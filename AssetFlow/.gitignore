@@ -1,0 +1,17 @@
+# Ignores .NET, Node.js, and Docker build artifacts.
+# Node
+node_modules/
+.next/
+out/
+build/
+
+# .NET
+bin/
+obj/
+
+# Docker
+.docker/
+
+# Env
+.env
+.env.local\n
