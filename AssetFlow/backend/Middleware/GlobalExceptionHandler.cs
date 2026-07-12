@@ -35,6 +35,8 @@ public class GlobalExceptionHandler
         {
             ArgumentException => (int)HttpStatusCode.BadRequest,
             UnauthorizedAccessException => (int)HttpStatusCode.Unauthorized,
+            AssetFlow.Exceptions.DoubleAllocationException => (int)HttpStatusCode.Conflict,
+            AssetFlow.Exceptions.BookingOverlapException => (int)HttpStatusCode.Conflict,
             InvalidOperationException => (int)HttpStatusCode.Conflict,
             AssetFlow.Services.InvalidTransitionException => (int)HttpStatusCode.Conflict,
             _ => (int)HttpStatusCode.InternalServerError
@@ -42,12 +44,35 @@ public class GlobalExceptionHandler
 
         context.Response.StatusCode = statusCode;
 
-        var result = JsonSerializer.Serialize(new
-        {
-            error = exception.Message,
-            statusCode = statusCode
-        });
+        object result;
 
-        return context.Response.WriteAsync(result);
+        if (exception is AssetFlow.Exceptions.DoubleAllocationException dae)
+        {
+            result = new 
+            {
+                error = "AssetAlreadyAllocated",
+                message = dae.Message,
+                currentHolderId = dae.CurrentHolderId,
+                currentHolderName = dae.CurrentHolderName,
+                allocationId = dae.AllocationId
+            };
+        }
+        else if (exception is AssetFlow.Exceptions.BookingOverlapException boe)
+        {
+            result = new 
+            {
+                error = "BookingOverlap",
+                message = boe.Message,
+                conflictingBookingId = boe.ConflictingBookingId,
+                conflictingStart = boe.ConflictingStart,
+                conflictingEnd = boe.ConflictingEnd
+            };
+        }
+        else
+        {
+            result = new { error = exception.Message, statusCode = statusCode };
+        }
+
+        return context.Response.WriteAsJsonAsync(result);
     }
 }

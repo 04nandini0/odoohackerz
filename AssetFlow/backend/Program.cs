@@ -34,8 +34,9 @@ builder.Services.AddScoped<IMongoDatabase>(sp =>
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<IAssetCategoryRepository, AssetCategoryRepository>();
-builder.Services.AddScoped<IAssetRepository, AssetRepository>();
-builder.Services.AddScoped<IActivityLogRepository, ActivityLogRepository>();
+builder.Services.AddScoped<IAllocationRepository, AllocationRepository>();
+builder.Services.AddScoped<ITransferRepository, TransferRepository>();
+builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<ICounterRepository, CounterRepository>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -47,6 +48,9 @@ builder.Services.AddScoped<IStorageService, StorageService>();
 builder.Services.AddScoped<IQRCodeService, QRCodeService>();
 builder.Services.AddScoped<IAssetLifecycleService, AssetLifecycleService>();
 builder.Services.AddScoped<IAssetService, AssetService>();
+builder.Services.AddScoped<IAllocationService, AllocationService>();
+builder.Services.AddScoped<ITransferService, TransferService>();
+builder.Services.AddScoped<IBookingService, BookingService>();
 
 builder.Services.Configure<MinIOConfig>(builder.Configuration.GetSection("MinIO"));
 
@@ -202,6 +206,10 @@ using (var scope = app.Services.CreateScope())
     // Seed Mock Assets
     var assetRepo = scope.ServiceProvider.GetRequiredService<IAssetRepository>();
     var counterRepo = scope.ServiceProvider.GetRequiredService<ICounterRepository>();
+    var allocRepo = scope.ServiceProvider.GetRequiredService<IAllocationRepository>();
+    var transferRepo = scope.ServiceProvider.GetRequiredService<ITransferRepository>();
+    var bookingRepo = scope.ServiceProvider.GetRequiredService<IBookingRepository>();
+    var employeeRepoForSeed = scope.ServiceProvider.GetRequiredService<IEmployeeRepository>();
     
     if (assetRepo.GetAllAsync().Result.Count() == 0)
     {
@@ -209,7 +217,7 @@ using (var scope = app.Services.CreateScope())
         var furniture = catRepo.FindByNameAsync("Furniture").Result;
         var vehicles = catRepo.FindByNameAsync("Vehicles").Result;
 
-        var CreateMockAsset = (string name, string catId, Dictionary<string,string> customFields, AssetStatus status) => {
+        var CreateMockAsset = (string name, string catId, Dictionary<string,string> customFields, AssetStatus status, bool isBookable = false) => {
             var seq = counterRepo.GetNextSequenceValueAsync("assetTag").Result;
             return new Asset
             {
@@ -219,6 +227,7 @@ using (var scope = app.Services.CreateScope())
                 CustomFieldValues = customFields,
                 Status = status,
                 Location = "Main Office",
+                IsBookable = isBookable,
                 AcquisitionDate = DateTime.UtcNow.AddDays(-100),
                 AcquisitionCost = 1500.00m,
                 CreatedAt = DateTime.UtcNow,
@@ -228,24 +237,79 @@ using (var scope = app.Services.CreateScope())
 
         if (electronics != null)
         {
-            assetRepo.CreateAsync(CreateMockAsset("MacBook Pro 16", electronics.Id, new Dictionary<string, string> { { "Warranty Period (months)", "36" } }, AssetStatus.Available)).Wait();
-            assetRepo.CreateAsync(CreateMockAsset("Dell XPS 15", electronics.Id, new Dictionary<string, string> { { "Warranty Period (months)", "12" } }, AssetStatus.Allocated)).Wait();
+            assetRepo.CreateAsync(CreateMockAsset("MacBook Pro 16", electronics.Id, new Dictionary<string, string> { { "Warranty Period (months)", "36" } }, AssetStatus.Allocated)).Wait();
+            assetRepo.CreateAsync(CreateMockAsset("Dell XPS 15", electronics.Id, new Dictionary<string, string> { { "Warranty Period (months)", "12" } }, AssetStatus.Available)).Wait();
             assetRepo.CreateAsync(CreateMockAsset("Samsung Odyssey Monitor", electronics.Id, new Dictionary<string, string> { { "Warranty Period (months)", "24" } }, AssetStatus.UnderMaintenance)).Wait();
         }
 
         if (furniture != null)
         {
             assetRepo.CreateAsync(CreateMockAsset("Ergonomic Chair", furniture.Id, new Dictionary<string, string>(), AssetStatus.Available)).Wait();
-            assetRepo.CreateAsync(CreateMockAsset("Standing Desk", furniture.Id, new Dictionary<string, string>(), AssetStatus.Available)).Wait();
+            assetRepo.CreateAsync(CreateMockAsset("Conference Room B2", furniture.Id, new Dictionary<string, string>(), AssetStatus.Available, true)).Wait();
         }
 
         if (vehicles != null)
         {
-            assetRepo.CreateAsync(CreateMockAsset("Company Van", vehicles.Id, new Dictionary<string, string> { { "Registration Number", "ABC-1234" } }, AssetStatus.Available)).Wait();
-            assetRepo.CreateAsync(CreateMockAsset("Executive Car", vehicles.Id, new Dictionary<string, string> { { "Registration Number", "XYZ-9876" } }, AssetStatus.Retired)).Wait();
+            assetRepo.CreateAsync(CreateMockAsset("Company Van", vehicles.Id, new Dictionary<string, string> { { "Registration Number", "ABC-1234" } }, AssetStatus.Allocated)).Wait();
         }
-
         Console.WriteLine("Seeded mock assets.");
+    }
+
+    if (allocRepo.GetAllAsync().Result.Count() == 0)
+    {
+        var allAssets = assetRepo.GetAllAsync().Result;
+        var allEmployees = employeeRepoForSeed.GetAllAsync().Result;
+        var admin = allEmployees.FirstOrDefault(e => e.Role == EmployeeRole.Admin);
+        var employee = allEmployees.FirstOrDefault(e => e.Role == EmployeeRole.Employee);
+        
+        var macbook = allAssets.FirstOrDefault(a => a.Name.Contains("MacBook"));
+        var van = allAssets.FirstOrDefault(a => a.Name.Contains("Van"));
+        var dell = allAssets.FirstOrDefault(a => a.Name.Contains("Dell"));
+
+        if (admin != null && employee != null)
+        {
+            // Active allocations
+            if (macbook != null) {
+                var macAlloc = new Allocation { AssetId = macbook.Id, HolderId = employee.Id, HolderType = HolderType.Employee, Status = AllocationStatus.Active, ExpectedReturnDate = DateTime.UtcNow.AddDays(30) };
+                allocRepo.CreateAsync(macAlloc).Wait();
+
+                // Transfer request for macbook
+                transferRepo.CreateAsync(new Transfer { AllocationId = macAlloc.Id, AssetId = macbook.Id, FromHolderId = employee.Id, ToHolderId = admin.Id, ToHolderType = HolderType.Employee, Status = TransferStatus.Requested }).Wait();
+            }
+
+            if (van != null) {
+                var vanAlloc = new Allocation { AssetId = van.Id, HolderId = admin.Id, HolderType = HolderType.Employee, Status = AllocationStatus.Active, ExpectedReturnDate = DateTime.UtcNow.AddDays(-5) }; // Overdue
+                allocRepo.CreateAsync(vanAlloc).Wait();
+            }
+
+            // Returned allocation
+            if (dell != null) {
+                allocRepo.CreateAsync(new Allocation { AssetId = dell.Id, HolderId = admin.Id, HolderType = HolderType.Employee, Status = AllocationStatus.Returned, ExpectedReturnDate = DateTime.UtcNow.AddDays(-10), ActualReturnDate = DateTime.UtcNow.AddDays(-2) }).Wait();
+            }
+        }
+        Console.WriteLine("Seeded mock allocations and transfers.");
+    }
+
+    if (bookingRepo.GetAllAsync().Result.Count() == 0)
+    {
+        var allAssets = assetRepo.GetAllAsync().Result;
+        var allEmployees = employeeRepoForSeed.GetAllAsync().Result;
+        var employee = allEmployees.FirstOrDefault(e => e.Role == EmployeeRole.Employee);
+        
+        var room = allAssets.FirstOrDefault(a => a.Name.Contains("Conference"));
+
+        if (room != null && employee != null)
+        {
+            var now = DateTime.UtcNow.Date.AddHours(9); // 9 AM today
+            
+            // Existing: 9:00 - 10:00
+            bookingRepo.CreateAsync(new Booking { ResourceAssetId = room.Id, BookedBy = employee.Id, StartTime = now, EndTime = now.AddHours(1), Purpose = "Morning sync", Status = BookingStatus.Completed }).Wait();
+            // Back-to-back: 10:00 - 11:00
+            bookingRepo.CreateAsync(new Booking { ResourceAssetId = room.Id, BookedBy = employee.Id, StartTime = now.AddHours(1), EndTime = now.AddHours(2), Purpose = "Architecture Review", Status = BookingStatus.Upcoming }).Wait();
+            // Future
+            bookingRepo.CreateAsync(new Booking { ResourceAssetId = room.Id, BookedBy = employee.Id, StartTime = now.AddDays(1), EndTime = now.AddDays(1).AddHours(2), Purpose = "Client Meeting", Status = BookingStatus.Upcoming }).Wait();
+        }
+        Console.WriteLine("Seeded mock bookings.");
     }
 }
 
