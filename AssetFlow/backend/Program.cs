@@ -32,7 +32,16 @@ builder.Services.AddScoped<IMongoDatabase>(sp =>
 
 // --- Repositories & Services ---
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+builder.Services.AddScoped<IAssetCategoryRepository, AssetCategoryRepository>();
+builder.Services.AddScoped<IAssetRepository, AssetRepository>();
+builder.Services.AddScoped<IActivityLogRepository, ActivityLogRepository>();
+
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IActivityLogService, ActivityLogService>();
+builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+builder.Services.AddScoped<IAssetCategoryService, AssetCategoryService>();
+builder.Services.AddScoped<IEmployeeDirectoryService, EmployeeDirectoryService>();
 
 // --- JWT Authentication ---
 var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>() ?? new JwtSettings();
@@ -96,10 +105,13 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// --- Seed Admin Account ---
+// --- Seed Data ---
 using (var scope = app.Services.CreateScope())
 {
     var employeeRepo = scope.ServiceProvider.GetRequiredService<IEmployeeRepository>();
+    var deptRepo = scope.ServiceProvider.GetRequiredService<IDepartmentRepository>();
+    var catRepo = scope.ServiceProvider.GetRequiredService<IAssetCategoryRepository>();
+
     var adminEmail = "admin@assetflow.local";
     var existingAdmin = employeeRepo.FindByEmailAsync(adminEmail).Result;
     
@@ -115,6 +127,69 @@ using (var scope = app.Services.CreateScope())
         };
         employeeRepo.CreateAsync(admin).Wait();
         Console.WriteLine("Seeded default admin account: admin@assetflow.local / Admin@123");
+    }
+
+    // Seed Departments
+    if (deptRepo.GetAllAsync().Result.Count() == 0)
+    {
+        deptRepo.CreateAsync(new Department { Name = "Engineering" }).Wait();
+        deptRepo.CreateAsync(new Department { Name = "Facilities" }).Wait();
+        deptRepo.CreateAsync(new Department { Name = "HR" }).Wait();
+        Console.WriteLine("Seeded standard departments.");
+    }
+
+    // Seed Asset Categories
+    if (catRepo.GetAllAsync().Result.Count() == 0)
+    {
+        catRepo.CreateAsync(new AssetCategory 
+        { 
+            Name = "Electronics", 
+            CustomFields = new List<CustomFieldDefinition> 
+            { 
+                new CustomFieldDefinition { FieldName = "Warranty Period (months)", FieldType = "number", Required = true }
+            } 
+        }).Wait();
+        
+        catRepo.CreateAsync(new AssetCategory { Name = "Furniture" }).Wait();
+        
+        catRepo.CreateAsync(new AssetCategory 
+        { 
+            Name = "Vehicles",
+            CustomFields = new List<CustomFieldDefinition> 
+            { 
+                new CustomFieldDefinition { FieldName = "Registration Number", FieldType = "text", Required = true }
+            } 
+        }).Wait();
+        Console.WriteLine("Seeded standard asset categories.");
+    }
+
+    // Seed Mock Employees
+    if (employeeRepo.FindByEmailAsync("john@assetflow.local").Result == null)
+    {
+        var hrDept = deptRepo.FindByNameAsync("HR").Result;
+        employeeRepo.CreateAsync(new Employee
+        {
+            Name = "John Doe",
+            Email = "john@assetflow.local",
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("Pass@123"),
+            Role = EmployeeRole.Employee,
+            Status = EmployeeStatus.Active,
+            DepartmentId = hrDept?.Id
+        }).Wait();
+    }
+    
+    if (employeeRepo.FindByEmailAsync("jane@assetflow.local").Result == null)
+    {
+        var engDept = deptRepo.FindByNameAsync("Engineering").Result;
+        employeeRepo.CreateAsync(new Employee
+        {
+            Name = "Jane Smith",
+            Email = "jane@assetflow.local",
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("Pass@123"),
+            Role = EmployeeRole.Employee,
+            Status = EmployeeStatus.Active,
+            DepartmentId = engDept?.Id
+        }).Wait();
     }
 }
 

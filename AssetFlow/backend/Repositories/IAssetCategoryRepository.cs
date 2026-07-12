@@ -5,5 +5,5 @@ namespace AssetFlow.Repositories;
 
 public interface IAssetCategoryRepository : IBaseRepository<AssetCategory>
 {
-    // TODO: implement
-}\n
+    Task<AssetCategory?> FindByNameAsync(string name);
+}
