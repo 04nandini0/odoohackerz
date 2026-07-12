@@ -1,9 +1,10 @@
-// Repository interface for Employee specific data operations.
 using AssetFlow.Models;
 
 namespace AssetFlow.Repositories;
 
 public interface IEmployeeRepository : IBaseRepository<Employee>
 {
-    // TODO: implement
-}\n
+    Task<Employee?> FindByEmailAsync(string email);
+    Task<Employee?> FindByRefreshTokenAsync(string refreshToken);
+    Task<Employee?> FindByResetTokenAsync(string resetToken);
+}

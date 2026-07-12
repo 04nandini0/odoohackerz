@@ -1,7 +1,13 @@
-// Generic repository interface for MongoDB data access.
+using System.Linq.Expressions;
+
 namespace AssetFlow.Repositories;
 
 public interface IBaseRepository<T>
 {
-    // TODO: implement basic CRUD signatures
+    Task<IEnumerable<T>> GetAllAsync();
+    Task<T?> GetByIdAsync(string id);
+    Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> filterExpression);
+    Task CreateAsync(T entity);
+    Task UpdateAsync(string id, T entity);
+    Task DeleteAsync(string id);
 }\n
