@@ -47,8 +47,8 @@ Built entirely on **self-hosted, open infrastructure** — no third-party SaaS/B
 |---|---|---|
 | Avinash7061 | Auth & Org Lead | Login/signup, JWT, role guards, department/category/employee directory setup |
 | Muskan-06-git | Asset Core Lead | Asset registration, directory & search, lifecycle state machine |
-| Sujata-dot | Allocation & Booking Lead | Allocation/transfer conflict logic, resource booking overlap validation |
-| 04Nandini0 | Maintenance, Dashboard & Notifications Lead | Maintenance workflow, KPI dashboard, SignalR hub, notification feed |
+| 04Nandini0 | Allocation & Booking Lead | Allocation/transfer conflict logic, resource booking overlap validation |
+| Sujata-dot | Maintenance, Dashboard & Notifications Lead | Maintenance workflow, KPI dashboard, SignalR hub, notification feed |
 
 ---
 
