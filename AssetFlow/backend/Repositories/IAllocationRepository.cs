@@ -5,5 +5,5 @@ namespace AssetFlow.Repositories;
 
 public interface IAllocationRepository : IBaseRepository<Allocation>
 {
-    // TODO: implement
-}\n
+        Task<Allocation?> GetActiveByAssetIdAsync(string assetId);
+}

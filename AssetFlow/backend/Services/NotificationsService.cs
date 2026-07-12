@@ -4,4 +4,4 @@ namespace AssetFlow.Services;
 public class NotificationsService : INotificationsService
 {
     // TODO: implement
-}\n
+}

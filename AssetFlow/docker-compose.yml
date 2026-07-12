@@ -3,9 +3,18 @@ version: '3.8'
 
 services:
   mongo:
-    image: mongo:latest
+    image: mongo:7
+    container_name: assetflow-mongo
+    restart: unless-stopped
     ports:
       - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: assetflow
+      MONGO_INITDB_ROOT_PASSWORD: assetflow123
+      MONGO_INITDB_DATABASE: assetflow
+    volumes:
+      - mongo-data:/data/db
+      - ./backend/db-init:/docker-entrypoint-initdb.d
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
       interval: 10s
@@ -53,6 +62,9 @@ services:
       context: ./backend
     ports:
       - "5000:80"
+    environment:
+      MongoDb__ConnectionString: "mongodb://assetflow:assetflow123@mongo:27017/assetflow?authSource=admin"
+      MongoDb__DatabaseName: "assetflow"
     depends_on:
       mongo:
         condition: service_healthy
@@ -69,4 +81,7 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - backend\n
+      - backend
+
+volumes:
+  mongo-data:

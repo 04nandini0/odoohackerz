@@ -1,26 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-background text-foreground antialiased selection:bg-indigo-500/30;
+  }
+}
+
+@layer utilities {
+  .glass-card {
+    @apply bg-surface-50 backdrop-blur-md border border-white/5 shadow-2xl rounded-2xl bg-opacity-80;
+  }
+  .glass-panel {
+    @apply bg-surface-100 backdrop-blur-sm border border-white/5 rounded-xl bg-opacity-50;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
 .rbc-calendar {
   font-family: inherit;
 }
 .rbc-toolbar button {
-  color: #e2e8f0;
+  color: #a1a1aa;
 }
 .rbc-toolbar button:active, .rbc-toolbar button.rbc-active {
-  background-color: #334155;
+  background-color: #27272a;
   color: white;
 }
 .rbc-off-range-bg {
-  background: #0f172a;
+  background: #09090b;
 }
 .rbc-today {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(255, 255, 255, 0.03);
 }
 .rbc-header {
-  border-bottom: 1px solid #334155;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 .rbc-day-bg + .rbc-day-bg, .rbc-month-row + .rbc-month-row, .rbc-time-content > * + * > *, .rbc-time-header.rbc-overflowing {
-  border-left-color: #334155;
-  border-top-color: #334155;
+  border-left-color: rgba(255, 255, 255, 0.05);
+  border-top-color: rgba(255, 255, 255, 0.05);
 }
 .rbc-timeslot-group {
-  border-bottom: 1px solid #334155;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }

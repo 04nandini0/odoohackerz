@@ -7,4 +7,4 @@ interface AllocationsState {
 
 export const useAllocationsStore = create<AllocationsState>((set) => ({
     // TODO: implement
-}));\n
+}));

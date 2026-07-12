@@ -1,107 +1,132 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useAuthStore } from "@/store/authStore";
 import useSWR from "swr";
+import { fetcher } from "@/lib/api-client";
 import KpiCard from "@/components/dashboard/KpiCard";
-import OverdueSection from "@/components/dashboard/OverdueSection";
-import QuickActions from "@/components/dashboard/QuickActions";
-import { useAuthStore } from "@/store/authStore"; // Assuming an auth store exists to provide token
-import { signalRClient } from "@/lib/signalr-client";
+import { Box, Calendar, AlertTriangle, Users } from "lucide-react";
+import { motion, Variants } from "framer-motion";
 
-// In a real app you'd get the JWT from your auth store
-const fetcher = (url: string) => fetch(url, {
-  headers: {
-    // We assume the auth interceptor attaches the token, or we grab it manually
-    // For this mock, we assume credentials are sent or global fetch is patched
+const container: Variants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
   }
-}).then(res => res.json());
+};
+
+const item: Variants = {
+  hidden: { opacity: 0, y: 10 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.3 } }
+};
 
 export default function DashboardPage() {
-  const [token, setToken] = useState("");
-  
-  // This is a naive way to get token for SignalR. Usually it's in a state manager.
-  useEffect(() => {
-    const t = localStorage.getItem("accessToken");
-    if (t) setToken(t);
-  }, []);
+  const user = useAuthStore((state) => state.user);
+  const { data: kpis, error, isLoading } = useSWR<any>("/dashboard/kpis", fetcher);
 
-  useEffect(() => {
-    if (token) {
-      signalRClient.connect(token);
-    }
-    return () => {
-      // We don't disconnect on unmount of dashboard alone to keep notifications alive,
-      // but typically you'd handle this in a global layout.
-    };
-  }, [token]);
+  if (isLoading) {
+    return (
+      <div className="p-8 flex items-center justify-center min-h-[50vh]">
+        <div className="w-8 h-8 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
-  const { data: kpis, mutate: mutateKpis } = useSWR("/api/dashboard/kpis", fetcher, { 
-    refreshInterval: 60000 // Fallback polling
-  });
-  
-  const { data: overdueItems, mutate: mutateOverdue } = useSWR("/api/dashboard/overdue", fetcher);
-
-  useEffect(() => {
-    const handleDashboardStale = () => {
-      mutateKpis();
-      mutateOverdue();
-    };
-
-    window.addEventListener('dashboard-stale', handleDashboardStale);
-    return () => window.removeEventListener('dashboard-stale', handleDashboardStale);
-  }, [mutateKpis, mutateOverdue]);
+  if (error) {
+    return (
+      <div className="p-8">
+        <div className="bg-rose-500/10 border border-rose-500/20 text-rose-400 p-4 rounded-xl">
+          Failed to load dashboard data. Are you sure you are logged in?
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="max-w-7xl mx-auto py-8 px-4">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-400 to-purple-500 bg-clip-text text-transparent">
-          Dashboard
-        </h1>
-        <p className="text-slate-400 mt-1">Overview of asset metrics and required actions.</p>
-      </div>
+    <div className="p-8 max-w-7xl mx-auto space-y-8 bg-transparent min-h-full">
+      <motion.div 
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex items-center justify-between"
+      >
+        <div>
+          <h1 className="text-3xl font-semibold text-white mb-1 tracking-tight">
+            Dashboard Overview
+          </h1>
+          <p className="text-zinc-400">Welcome back, {user?.name}</p>
+        </div>
+      </motion.div>
 
-      {overdueItems && overdueItems.length > 0 && (
-        <OverdueSection items={overdueItems} />
-      )}
+      <motion.div 
+        variants={container}
+        initial="hidden"
+        animate="show"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+      >
+        <motion.div variants={item}>
+          <KpiCard 
+            label="Available Assets" 
+            value={kpis?.assetsAvailable || kpis?.availableAssets || 0} 
+            icon={<Box className="w-6 h-6 text-emerald-400" />} 
+          />
+        </motion.div>
+        
+        <motion.div variants={item}>
+          <KpiCard 
+            label="Active Bookings" 
+            value={kpis?.activeBookings || 0} 
+            icon={<Calendar className="w-6 h-6 text-primary-400" />} 
+          />
+        </motion.div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <div className="lg:col-span-3">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-            <KpiCard 
-              label="Available Assets" 
-              value={kpis?.assetsAvailable ?? "..."} 
-              icon={<svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>}
-            />
-            <KpiCard 
-              label="Allocated Assets" 
-              value={kpis?.assetsAllocated ?? "..."} 
-              icon={<svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>}
-            />
-            <KpiCard 
-              label="Maintenance Today" 
-              value={kpis?.maintenanceToday ?? "..."} 
-              trend="Requires attention"
-              icon={<svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>}
-            />
-            <KpiCard 
-              label="Active Bookings" 
-              value={kpis?.activeBookings ?? "..."} 
-            />
-            <KpiCard 
-              label="Pending Transfers" 
-              value={kpis?.pendingTransfers ?? "..."} 
-            />
-            <KpiCard 
-              label="Upcoming Returns" 
-              value={kpis?.upcomingReturns ?? "..."} 
-            />
+        <motion.div variants={item}>
+          <KpiCard 
+            label="Pending Maintenance" 
+            value={kpis?.maintenanceToday || kpis?.pendingMaintenance || 0} 
+            icon={<AlertTriangle className="w-6 h-6 text-amber-400" />} 
+            trend="Requires attention"
+          />
+        </motion.div>
+
+        <motion.div variants={item}>
+          <KpiCard 
+            label="Allocated Assets" 
+            value={kpis?.assetsAllocated || kpis?.totalEmployees || 0} 
+            icon={<Users className="w-6 h-6 text-purple-400" />} 
+          />
+        </motion.div>
+      </motion.div>
+
+      <motion.div 
+        variants={container}
+        initial="hidden"
+        animate="show"
+        className="grid grid-cols-1 lg:grid-cols-3 gap-6"
+      >
+        <motion.div variants={item} className="lg:col-span-2 glass-card p-6 min-h-[400px]">
+          <h3 className="text-lg font-semibold text-white mb-4">Asset Utilization Trend</h3>
+          <div className="w-full h-[300px] flex items-center justify-center border border-white/5 rounded-xl bg-surface-100/30 border-dashed">
+            <span className="text-zinc-500">Visualization Placeholder</span>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="lg:col-span-1">
-          <QuickActions />
-        </div>
-      </div>
+        <motion.div variants={item} className="glass-card p-6 min-h-[400px]">
+          <h3 className="text-lg font-semibold text-white mb-4">Recent Activity</h3>
+          <div className="space-y-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="flex items-start gap-4 p-3 rounded-xl hover:bg-surface-100/50 transition-colors cursor-pointer border border-transparent hover:border-white/5">
+                <div className="w-2 h-2 mt-2 rounded-full bg-primary-500 shrink-0 shadow-lg shadow-primary-500/50" />
+                <div>
+                  <p className="text-sm font-medium text-white">Asset checked out</p>
+                  <p className="text-xs text-zinc-400">2 hours ago</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }

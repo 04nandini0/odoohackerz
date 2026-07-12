@@ -4,4 +4,4 @@ namespace AssetFlow.Services;
 public class AssetsService : IAssetsService
 {
     // TODO: implement
-}\n
+}

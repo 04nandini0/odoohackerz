@@ -1,0 +1,56 @@
+[
+  {
+    "id": "cf03b729bf5d47509068517c",
+    "assetId": "7727708c221abcec91ae52ae",
+    "raisedBy": "dfdc5224fc348f737b9dd5d3",
+    "issue": "Device is overheating and shutting down randomly.",
+    "priority": "High",
+    "status": "InProgress",
+    "raisedAt": "2026-07-08T11:14:13.942055+00:00"
+  },
+  {
+    "id": "e6871ec0ff98c7d1bbaf24c3",
+    "assetId": "c0a89d637e91c59aae7b2ead",
+    "raisedBy": "dfdc5224fc348f737b9dd5d3",
+    "issue": "Device is overheating and shutting down randomly.",
+    "priority": "High",
+    "status": "InProgress",
+    "raisedAt": "2026-07-08T11:14:13.942061+00:00"
+  },
+  {
+    "id": "25b068a0b55204a1e5406395",
+    "assetId": "b6917b44e304a836b89d5549",
+    "raisedBy": "a8d6eb7890777548c4913e12",
+    "issue": "Device is overheating and shutting down randomly.",
+    "priority": "High",
+    "status": "InProgress",
+    "raisedAt": "2026-07-07T11:14:13.942066+00:00"
+  },
+  {
+    "id": "a7df25d32898ede196a1b12c",
+    "assetId": "414bb6824344f7d34f918f36",
+    "raisedBy": "4e029d8bbe31adf752c7aafc",
+    "issue": "Device is overheating and shutting down randomly.",
+    "priority": "High",
+    "status": "InProgress",
+    "raisedAt": "2026-07-07T11:14:13.942072+00:00"
+  },
+  {
+    "id": "b0cadb993db76722a1a29e5f",
+    "assetId": "c2bd4e3956aa3f699c51504d",
+    "raisedBy": "ba1800fb864c2e171cdfbdca",
+    "issue": "Device is overheating and shutting down randomly.",
+    "priority": "High",
+    "status": "InProgress",
+    "raisedAt": "2026-07-11T11:14:13.942077+00:00"
+  },
+  {
+    "id": "e067d162e39d1bb08115f987",
+    "assetId": "bdac2af2d691797c0b5ede6c",
+    "raisedBy": "61e6435b1449acf93117aa4c",
+    "issue": "Device is overheating and shutting down randomly.",
+    "priority": "High",
+    "status": "InProgress",
+    "raisedAt": "2026-07-07T11:14:13.942081+00:00"
+  }
+]

@@ -4,4 +4,4 @@ namespace AssetFlow.Config;
 public class RabbitMQConfig
 {
     // TODO: implement
-}\n
+}

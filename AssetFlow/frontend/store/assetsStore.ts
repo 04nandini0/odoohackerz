@@ -7,4 +7,4 @@ interface AssetsState {
 
 export const useAssetsStore = create<AssetsState>((set) => ({
     // TODO: implement
-}));\n
+}));

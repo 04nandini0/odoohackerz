@@ -9,4 +9,4 @@ public class AssetsRequestDto
 public class AssetsResponseDto
 {
     // TODO: implement
-}\n
+}

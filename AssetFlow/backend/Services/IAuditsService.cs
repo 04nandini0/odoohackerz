@@ -4,4 +4,4 @@ namespace AssetFlow.Services;
 public interface IAuditsService
 {
     // TODO: implement
-}\n
+}

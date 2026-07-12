@@ -3,4 +3,4 @@ import * as z from 'zod';
 
 export const AuditCycleSchema = z.object({
     // TODO: implement
-});\n
+});

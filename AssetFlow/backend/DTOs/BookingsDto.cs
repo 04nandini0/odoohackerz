@@ -9,4 +9,4 @@ public class BookingsRequestDto
 public class BookingsResponseDto
 {
     // TODO: implement
-}\n
+}

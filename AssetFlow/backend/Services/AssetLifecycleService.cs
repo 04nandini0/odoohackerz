@@ -56,12 +56,7 @@ public class AssetLifecycleService : IAssetLifecycleService
 
         await _assetRepository.UpdateAsync(asset.Id, asset);
 
-        await _activityLogService.LogAsync(
-            action: "AssetStatusChanged",
-            description: $"Asset {asset.Tag} status changed from {currentStatus} to {newStatus}",
-            performedByEmployeeId: actorId,
-            targetEntityId: asset.Id,
-            details: details
-        );
+        var logDetails = details == null ? null : new Dictionary<string, string> { { "details", details } };
+        await _activityLogService.LogAsync(actorId, "AssetStatusChanged", "Asset", asset.Id, logDetails);
     }
 }

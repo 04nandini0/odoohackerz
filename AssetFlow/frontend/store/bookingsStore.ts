@@ -7,4 +7,4 @@ interface BookingsState {
 
 export const useBookingsStore = create<BookingsState>((set) => ({
     // TODO: implement
-}));\n
+}));

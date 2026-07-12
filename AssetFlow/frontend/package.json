@@ -8,17 +8,22 @@
     "start": "next start"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.4.0",
     "@microsoft/signalr": "^10.0.0",
     "@types/react-big-calendar": "^1.16.3",
+    "clsx": "^2.1.1",
     "date-fns": "^4.4.0",
+    "framer-motion": "^12.42.2",
+    "lucide-react": "^1.24.0",
     "next": "14.2.0",
     "react": "^18",
     "react-big-calendar": "^1.20.0",
     "react-dom": "^18",
-    "react-hook-form": "^7.51.3",
+    "react-hook-form": "^7.81.0",
     "sonner": "^1.4.41",
     "swr": "^2.4.2",
-    "zod": "^3.23.4",
+    "tailwind-merge": "^3.6.0",
+    "zod": "^3.25.76",
     "zustand": "^4.5.2"
   },
   "devDependencies": {

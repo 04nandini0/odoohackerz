@@ -6,4 +6,4 @@ namespace AssetFlow.Repositories;
 public interface IMaintenanceRequestRepository : IBaseRepository<MaintenanceRequest>
 {
     // TODO: implement
-}\n
+}

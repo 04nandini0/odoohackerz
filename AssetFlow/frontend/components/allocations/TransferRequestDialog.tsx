@@ -11,7 +11,7 @@ export default function TransferRequestDialog({ allocationId, currentHolderName,
 
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: zodResolver(CreateTransferSchema),
-    defaultValues: { allocationId, holderType: "Employee" }
+    defaultValues: { allocationId, toHolderType: "Employee" }
   });
 
   const onSubmit = async (data: any) => {

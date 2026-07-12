@@ -8,4 +8,4 @@ namespace AssetFlow.Controllers;
 public class AuditsController : ControllerBase
 {
     // TODO: implement endpoints
-}\n
+}

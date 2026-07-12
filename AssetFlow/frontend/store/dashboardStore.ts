@@ -7,4 +7,4 @@ interface DashboardState {
 
 export const useDashboardStore = create<DashboardState>((set) => ({
     // TODO: implement
-}));\n
+}));

@@ -5,5 +5,7 @@ namespace AssetFlow.Repositories;
 
 public class AuditItemRepository : BaseRepository<AuditItem>, IAuditItemRepository
 {
-    // TODO: implement
-}\n
+    
+    public AuditItemRepository(MongoDB.Driver.IMongoDatabase database) : base(database, "AuditItems") { }
+
+}

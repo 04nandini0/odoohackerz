@@ -4,4 +4,4 @@ namespace AssetFlow.Services;
 public interface IAllocationsService
 {
     // TODO: implement
-}\n
+}

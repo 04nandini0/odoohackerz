@@ -4,4 +4,4 @@ namespace AssetFlow.Services;
 public class ReportsService : IReportsService
 {
     // TODO: implement
-}\n
+}

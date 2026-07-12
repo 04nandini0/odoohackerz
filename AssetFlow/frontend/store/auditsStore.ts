@@ -7,4 +7,4 @@ interface AuditsState {
 
 export const useAuditsStore = create<AuditsState>((set) => ({
     // TODO: implement
-}));\n
+}));

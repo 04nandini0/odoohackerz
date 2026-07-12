@@ -45,4 +45,4 @@ public class BaseRepository<T> : IBaseRepository<T>
         var filter = Builders<T>.Filter.Eq("_id", ObjectId.Parse(id));
         await _collection.DeleteOneAsync(filter);
     }
-}\n
+}

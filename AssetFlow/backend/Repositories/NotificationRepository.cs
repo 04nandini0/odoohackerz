@@ -3,29 +3,18 @@ using MongoDB.Driver;
 
 namespace AssetFlow.Repositories;
 
-public interface INotificationRepository
-{
-    Task CreateAsync(Notification notification);
-    Task<Notification?> GetByIdAsync(string id);
-    Task UpdateAsync(string id, Notification notification);
-    Task<List<Notification>> GetByUserIdAsync(string userId, bool unreadOnly);
-    Task UpdateManyAsync(FilterDefinition<Notification> filter, UpdateDefinition<Notification> update);
-}
 
-public class NotificationRepository : INotificationRepository
-{
-    private readonly IMongoCollection<Notification> _collection;
 
-    public NotificationRepository(IMongoDatabase database)
+public class NotificationRepository : BaseRepository<Notification>, INotificationRepository
+{
+    
+
+    public NotificationRepository(IMongoDatabase database) : base(database, "Notifications")
     {
-        _collection = database.GetCollection<Notification>("Notifications");
     }
 
-    public async Task CreateAsync(Notification notification) => await _collection.InsertOneAsync(notification);
     
-    public async Task<Notification?> GetByIdAsync(string id) => await _collection.Find(n => n.Id == id).FirstOrDefaultAsync();
     
-    public async Task UpdateAsync(string id, Notification notification) => await _collection.ReplaceOneAsync(n => n.Id == id, notification);
     
     public async Task<List<Notification>> GetByUserIdAsync(string userId, bool unreadOnly)
     {

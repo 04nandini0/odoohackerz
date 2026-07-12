@@ -7,4 +7,4 @@ interface ReportsState {
 
 export const useReportsStore = create<ReportsState>((set) => ({
     // TODO: implement
-}));\n
+}));

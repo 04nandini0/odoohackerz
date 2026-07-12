@@ -9,4 +9,4 @@ public class AllocationsRequestDto
 public class AllocationsResponseDto
 {
     // TODO: implement
-}\n
+}

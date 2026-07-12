@@ -4,4 +4,4 @@ namespace AssetFlow.Services;
 public interface IBookingsService
 {
     // TODO: implement
-}\n
+}

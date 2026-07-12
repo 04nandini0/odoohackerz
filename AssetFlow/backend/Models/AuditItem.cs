@@ -11,4 +11,4 @@ public class AuditItem
     public string Id { get; set; }
     
     // TODO: implement properties
-}\n
+}

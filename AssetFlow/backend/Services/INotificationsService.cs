@@ -4,4 +4,4 @@ namespace AssetFlow.Services;
 public interface INotificationsService
 {
     // TODO: implement
-}\n
+}

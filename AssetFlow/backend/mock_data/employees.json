@@ -1,0 +1,101 @@
+[
+  {
+    "id": "44bdee845353e98d7e4d04e4",
+    "name": "Alice Smith",
+    "email": "alice.smith@milliai.tech",
+    "departmentId": "4615ea9ee9702e2a2c10ae7b",
+    "role": "Employee",
+    "status": "Active",
+    "createdAt": "2025-10-13T11:14:13.940837+00:00"
+  },
+  {
+    "id": "084f24899434d7aa8a1e40ca",
+    "name": "Bob Jones",
+    "email": "bob.jones@milliai.tech",
+    "departmentId": "eb5413b105f2dcd4f577e2ff",
+    "role": "AssetManager",
+    "status": "Active",
+    "createdAt": "2026-03-24T11:14:13.941059+00:00"
+  },
+  {
+    "id": "c35ebae76a73156b75a6682c",
+    "name": "Charlie Brown",
+    "email": "charlie.brown@milliai.tech",
+    "departmentId": "4615ea9ee9702e2a2c10ae7b",
+    "role": "Employee",
+    "status": "Active",
+    "createdAt": "2026-01-04T11:14:13.941070+00:00"
+  },
+  {
+    "id": "61e6435b1449acf93117aa4c",
+    "name": "Diana Prince",
+    "email": "diana.prince@milliai.tech",
+    "departmentId": "eb5413b105f2dcd4f577e2ff",
+    "role": "Employee",
+    "status": "Active",
+    "createdAt": "2025-10-29T11:14:13.941077+00:00"
+  },
+  {
+    "id": "32e85a902c062e4ebc52bc41",
+    "name": "Evan Wright",
+    "email": "evan.wright@milliai.tech",
+    "departmentId": "eb5413b105f2dcd4f577e2ff",
+    "role": "Employee",
+    "status": "Active",
+    "createdAt": "2026-01-12T11:14:13.941083+00:00"
+  },
+  {
+    "id": "4e029d8bbe31adf752c7aafc",
+    "name": "Fiona Gallagher",
+    "email": "fiona.gallagher@milliai.tech",
+    "departmentId": "fd7435b88a9dda71c2814ea5",
+    "role": "Employee",
+    "status": "Active",
+    "createdAt": "2025-08-25T11:14:13.941088+00:00"
+  },
+  {
+    "id": "dfdc5224fc348f737b9dd5d3",
+    "name": "George Costanza",
+    "email": "george.costanza@milliai.tech",
+    "departmentId": "43829a489def8f8cc1a40126",
+    "role": "Employee",
+    "status": "Active",
+    "createdAt": "2026-03-10T11:14:13.941093+00:00"
+  },
+  {
+    "id": "cb36bb062d1e70e7642d8127",
+    "name": "Hannah Abbott",
+    "email": "hannah.abbott@milliai.tech",
+    "departmentId": "d6512d5b4a4de9abaf56dbd1",
+    "role": "Employee",
+    "status": "Active",
+    "createdAt": "2026-03-26T11:14:13.941098+00:00"
+  },
+  {
+    "id": "8c8690cdaf12cb915057f45d",
+    "name": "Ian Malcolm",
+    "email": "ian.malcolm@milliai.tech",
+    "departmentId": "43829a489def8f8cc1a40126",
+    "role": "Employee",
+    "status": "Active",
+    "createdAt": "2026-02-28T11:14:13.941103+00:00"
+  },
+  {
+    "id": "ba1800fb864c2e171cdfbdca",
+    "name": "Julia Roberts",
+    "email": "julia.roberts@milliai.tech",
+    "departmentId": "36ce1867f22f4f5d69daa8d0",
+    "role": "Employee",
+    "status": "Active",
+    "createdAt": "2025-09-26T11:14:13.941111+00:00"
+  },
+  {
+    "id": "a8d6eb7890777548c4913e12",
+    "name": "System Admin",
+    "email": "admin@milliai.tech",
+    "departmentId": "36ce1867f22f4f5d69daa8d0",
+    "role": "Admin",
+    "status": "Active",
+    "createdAt": "2026-01-26T11:14:13.941118+00:00"
+  }
+]

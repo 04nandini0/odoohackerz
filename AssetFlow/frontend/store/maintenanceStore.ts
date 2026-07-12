@@ -7,4 +7,4 @@ interface MaintenanceState {
 
 export const useMaintenanceStore = create<MaintenanceState>((set) => ({
     // TODO: implement
-}));\n
+}));

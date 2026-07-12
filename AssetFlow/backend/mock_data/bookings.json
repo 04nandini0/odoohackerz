@@ -1,0 +1,152 @@
+[
+  {
+    "id": "a069a9721af4c2b6afb2b2db",
+    "resourceAssetId": "51937a54a2ca78fafd32ca14",
+    "bookedBy": "c35ebae76a73156b75a6682c",
+    "startTime": "2026-07-17T11:14:13.941900+00:00",
+    "endTime": "2026-07-15T13:14:13.941904+00:00",
+    "status": "Upcoming",
+    "purpose": "Project Requirement",
+    "createdAt": "2026-07-07T11:14:13.941908+00:00"
+  },
+  {
+    "id": "1a47157b48bc7e9ed8c9625a",
+    "resourceAssetId": "51937a54a2ca78fafd32ca14",
+    "bookedBy": "44bdee845353e98d7e4d04e4",
+    "startTime": "2026-07-16T11:14:13.941914+00:00",
+    "endTime": "2026-07-13T13:14:13.941917+00:00",
+    "status": "Upcoming",
+    "purpose": "Project Requirement",
+    "createdAt": "2026-07-10T11:14:13.941921+00:00"
+  },
+  {
+    "id": "4cad561d16705bd0cb46f917",
+    "resourceAssetId": "f3bf6e7ae332fffac6988d51",
+    "bookedBy": "a8d6eb7890777548c4913e12",
+    "startTime": "2026-07-15T11:14:13.941926+00:00",
+    "endTime": "2026-07-14T13:14:13.941928+00:00",
+    "status": "Upcoming",
+    "purpose": "Project Requirement",
+    "createdAt": "2026-07-11T11:14:13.941931+00:00"
+  },
+  {
+    "id": "b08ffa9ff198869e5c3384c7",
+    "resourceAssetId": "244b72256ab7b1c986cba57f",
+    "bookedBy": "c35ebae76a73156b75a6682c",
+    "startTime": "2026-07-14T11:14:13.941936+00:00",
+    "endTime": "2026-07-13T13:14:13.941938+00:00",
+    "status": "Upcoming",
+    "purpose": "Project Requirement",
+    "createdAt": "2026-07-11T11:14:13.941941+00:00"
+  },
+  {
+    "id": "8e82eefe9385168c3fb7cdf4",
+    "resourceAssetId": "414bb6824344f7d34f918f36",
+    "bookedBy": "084f24899434d7aa8a1e40ca",
+    "startTime": "2026-07-14T11:14:13.941946+00:00",
+    "endTime": "2026-07-13T13:14:13.941948+00:00",
+    "status": "Upcoming",
+    "purpose": "Project Requirement",
+    "createdAt": "2026-07-11T11:14:13.941951+00:00"
+  },
+  {
+    "id": "11f083ba31d0eafa46f0290f",
+    "resourceAssetId": "9abc3f8758e98eded3f641f4",
+    "bookedBy": "32e85a902c062e4ebc52bc41",
+    "startTime": "2026-07-13T11:14:13.941956+00:00",
+    "endTime": "2026-07-14T13:14:13.941958+00:00",
+    "status": "Upcoming",
+    "purpose": "Project Requirement",
+    "createdAt": "2026-07-09T11:14:13.941961+00:00"
+  },
+  {
+    "id": "9cf84187bca0b4722d3f3ce0",
+    "resourceAssetId": "51937a54a2ca78fafd32ca14",
+    "bookedBy": "44bdee845353e98d7e4d04e4",
+    "startTime": "2026-07-14T11:14:13.941966+00:00",
+    "endTime": "2026-07-14T13:14:13.941969+00:00",
+    "status": "Upcoming",
+    "purpose": "Project Requirement",
+    "createdAt": "2026-07-09T11:14:13.941971+00:00"
+  },
+  {
+    "id": "0838169d5aa7cf10a8ee3f59",
+    "resourceAssetId": "f3bf6e7ae332fffac6988d51",
+    "bookedBy": "a8d6eb7890777548c4913e12",
+    "startTime": "2026-07-15T11:14:13.941976+00:00",
+    "endTime": "2026-07-17T13:14:13.941978+00:00",
+    "status": "Upcoming",
+    "purpose": "Project Requirement",
+    "createdAt": "2026-07-11T11:14:13.941981+00:00"
+  },
+  {
+    "id": "5575c8803aebd33a8381fed3",
+    "resourceAssetId": "adbf66912cb5016e529381a7",
+    "bookedBy": "44bdee845353e98d7e4d04e4",
+    "startTime": "2026-07-16T11:14:13.941986+00:00",
+    "endTime": "2026-07-16T13:14:13.941988+00:00",
+    "status": "Upcoming",
+    "purpose": "Project Requirement",
+    "createdAt": "2026-07-08T11:14:13.941991+00:00"
+  },
+  {
+    "id": "e1f04f194e4c67d788ae4281",
+    "resourceAssetId": "b6917b44e304a836b89d5549",
+    "bookedBy": "084f24899434d7aa8a1e40ca",
+    "startTime": "2026-07-17T11:14:13.941996+00:00",
+    "endTime": "2026-07-13T13:14:13.941998+00:00",
+    "status": "Upcoming",
+    "purpose": "Project Requirement",
+    "createdAt": "2026-07-09T11:14:13.942001+00:00"
+  },
+  {
+    "id": "5e22a19dc3f42d9c648e2d74",
+    "resourceAssetId": "bed3d84781ae7f6d62998852",
+    "bookedBy": "cb36bb062d1e70e7642d8127",
+    "startTime": "2026-07-15T11:14:13.942005+00:00",
+    "endTime": "2026-07-16T13:14:13.942008+00:00",
+    "status": "Upcoming",
+    "purpose": "Project Requirement",
+    "createdAt": "2026-07-09T11:14:13.942010+00:00"
+  },
+  {
+    "id": "f71725cbb242d7b11a04d411",
+    "resourceAssetId": "244b72256ab7b1c986cba57f",
+    "bookedBy": "a8d6eb7890777548c4913e12",
+    "startTime": "2026-07-17T11:14:13.942015+00:00",
+    "endTime": "2026-07-17T13:14:13.942018+00:00",
+    "status": "Upcoming",
+    "purpose": "Project Requirement",
+    "createdAt": "2026-07-10T11:14:13.942021+00:00"
+  },
+  {
+    "id": "65c7f5b47207d023535bc81e",
+    "resourceAssetId": "4c2bd8dd3c3c0959074d6842",
+    "bookedBy": "8c8690cdaf12cb915057f45d",
+    "startTime": "2026-07-15T11:14:13.942025+00:00",
+    "endTime": "2026-07-16T13:14:13.942028+00:00",
+    "status": "Upcoming",
+    "purpose": "Project Requirement",
+    "createdAt": "2026-07-07T11:14:13.942030+00:00"
+  },
+  {
+    "id": "434f20c74d3b6b41330ee0bd",
+    "resourceAssetId": "7727708c221abcec91ae52ae",
+    "bookedBy": "32e85a902c062e4ebc52bc41",
+    "startTime": "2026-07-16T11:14:13.942035+00:00",
+    "endTime": "2026-07-15T13:14:13.942037+00:00",
+    "status": "Upcoming",
+    "purpose": "Project Requirement",
+    "createdAt": "2026-07-08T11:14:13.942040+00:00"
+  },
+  {
+    "id": "be80ba3ec49295d75b7745fb",
+    "resourceAssetId": "b6917b44e304a836b89d5549",
+    "bookedBy": "084f24899434d7aa8a1e40ca",
+    "startTime": "2026-07-13T11:14:13.942045+00:00",
+    "endTime": "2026-07-16T13:14:13.942047+00:00",
+    "status": "Upcoming",
+    "purpose": "Project Requirement",
+    "createdAt": "2026-07-11T11:14:13.942050+00:00"
+  }
+]

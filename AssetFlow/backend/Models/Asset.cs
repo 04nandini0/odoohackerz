@@ -85,4 +85,4 @@ public class Asset
     [BsonElement("createdBy")]
     [BsonRepresentation(BsonType.ObjectId)]
     public string? CreatedBy { get; set; }
-}\n
+}

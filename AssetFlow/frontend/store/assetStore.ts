@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import apiClient from '@/lib/api-client';
+import { apiClient } from '@/lib/api-client';
 
 export interface Asset {
   id: string;
@@ -59,7 +59,7 @@ export const useAssetStore = create<AssetState>((set, get) => ({
         if (value) queryParams.append(key, value as string);
       });
       
-      const response = await apiClient.get(`/assets?${queryParams.toString()}`);
+      const response = await apiClient.get<any>(`/assets?${queryParams.toString()}`);
       set({ assets: response.data, isLoading: false });
     } catch (error: any) {
       set({ error: error.response?.data?.error || 'Failed to fetch assets', isLoading: false });
@@ -69,7 +69,7 @@ export const useAssetStore = create<AssetState>((set, get) => ({
   fetchAssetById: async (id) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await apiClient.get(`/assets/${id}`);
+      const response = await apiClient.get<any>(`/assets/${id}`);
       set({ currentAsset: response.data, isLoading: false });
     } catch (error: any) {
       set({ error: error.response?.data?.error || 'Failed to fetch asset', isLoading: false });
@@ -78,7 +78,7 @@ export const useAssetStore = create<AssetState>((set, get) => ({
 
   fetchAssetHistory: async (id) => {
     try {
-      const response = await apiClient.get(`/assets/${id}/history`);
+      const response = await apiClient.get<any>(`/assets/${id}/history`);
       set({ history: response.data });
     } catch (error: any) {
       console.error('Failed to fetch history', error);
@@ -87,7 +87,7 @@ export const useAssetStore = create<AssetState>((set, get) => ({
 
   createAsset: async (data) => {
     try {
-      const response = await apiClient.post('/assets', data);
+      const response = await apiClient.post<any>('/assets', data);
       return response.data;
     } catch (error: any) {
       throw new Error(error.response?.data?.error || 'Failed to register asset');
@@ -96,7 +96,7 @@ export const useAssetStore = create<AssetState>((set, get) => ({
 
   updateAsset: async (id, data) => {
     try {
-      const response = await apiClient.put(`/assets/${id}`, data);
+      const response = await apiClient.put<any>(`/assets/${id}`, data);
       await get().fetchAssetById(id);
       return response.data;
     } catch (error: any) {
@@ -109,7 +109,7 @@ export const useAssetStore = create<AssetState>((set, get) => ({
       const formData = new FormData();
       formData.append('file', file);
       
-      const response = await apiClient.post(`/assets/${id}/photos`, formData, {
+      const response = await apiClient.post<any>(`/assets/${id}/photos`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }

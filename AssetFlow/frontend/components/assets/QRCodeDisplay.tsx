@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import apiClient from "@/lib/api-client";
+import { apiClient } from "@/lib/api-client";
 
 interface QRCodeDisplayProps {
   assetId: string;
@@ -15,10 +15,14 @@ export default function QRCodeDisplay({ assetId }: QRCodeDisplayProps) {
 
     const fetchQrCode = async () => {
       try {
-        const response = await apiClient.get(`/assets/${assetId}/qr`, {
-          responseType: "blob"
+        const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+        const response = await fetch(`/api/assets/${assetId}/qr`, {
+          headers: token ? { "Authorization": `Bearer ${token}` } : {}
         });
-        objectUrl = URL.createObjectURL(response.data);
+        if (!response.ok) throw new Error("Failed to load");
+        
+        const blob = await response.blob();
+        objectUrl = URL.createObjectURL(blob);
         setImgUrl(objectUrl);
       } catch (e) {
         console.error("Failed to load QR code", e);

@@ -6,4 +6,4 @@ namespace AssetFlow.Repositories;
 public interface IAuditItemRepository : IBaseRepository<AuditItem>
 {
     // TODO: implement
-}\n
+}

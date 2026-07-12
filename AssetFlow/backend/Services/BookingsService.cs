@@ -4,4 +4,4 @@ namespace AssetFlow.Services;
 public class BookingsService : IBookingsService
 {
     // TODO: implement
-}\n
+}

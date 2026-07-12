@@ -4,4 +4,4 @@ namespace AssetFlow.Config;
 public class RedisConfig
 {
     // TODO: implement
-}\n
+}

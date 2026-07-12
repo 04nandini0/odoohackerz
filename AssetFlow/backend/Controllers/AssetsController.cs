@@ -116,7 +116,7 @@ public class AssetsController : ControllerBase
     {
         // TODO: replace with joined Allocation + MaintenanceRequest history once those modules are merged
         var allLogs = await _activityLogRepository.GetAllAsync();
-        var assetLogs = allLogs.Where(log => log.TargetEntityId == id).OrderByDescending(log => log.Timestamp).ToList();
+        var assetLogs = allLogs.Where(log => log.EntityId == id).OrderByDescending(log => log.Timestamp).ToList();
         return Ok(assetLogs);
     }
 

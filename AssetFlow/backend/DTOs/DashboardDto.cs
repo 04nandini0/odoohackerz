@@ -9,4 +9,4 @@ public class DashboardRequestDto
 public class DashboardResponseDto
 {
     // TODO: implement
-}\n
+}

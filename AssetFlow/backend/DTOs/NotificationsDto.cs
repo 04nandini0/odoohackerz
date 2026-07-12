@@ -9,4 +9,4 @@ public class NotificationsRequestDto
 public class NotificationsResponseDto
 {
     // TODO: implement
-}\n
+}

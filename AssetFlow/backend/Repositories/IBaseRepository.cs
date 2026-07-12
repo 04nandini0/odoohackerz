@@ -10,4 +10,4 @@ public interface IBaseRepository<T>
     Task CreateAsync(T entity);
     Task UpdateAsync(string id, T entity);
     Task DeleteAsync(string id);
-}\n
+}

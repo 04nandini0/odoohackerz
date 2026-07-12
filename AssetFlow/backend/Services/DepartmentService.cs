@@ -23,6 +23,11 @@ public class DepartmentService : IDepartmentService
         _activityLogService = activityLogService;
     }
 
+    public async Task<Department?> GetDepartmentByIdAsync(string id)
+    {
+        return await _departmentRepository.GetByIdAsync(id);
+    }
+
     public async Task<List<DepartmentResponse>> GetAllAsync(string? statusFilter = null)
     {
         var departments = await _departmentRepository.GetAllAsync();
@@ -74,7 +79,7 @@ public class DepartmentService : IDepartmentService
             {
                 emp.Role = EmployeeRole.DepartmentHead;
                 await _employeeRepository.UpdateAsync(emp.Id, emp);
-                await _activityLogService.LogAsync("PromoteEmployee", $"Automatically promoted {emp.Name} to DepartmentHead upon assigning to new department.", currentUserId, emp.Id);
+                await _activityLogService.LogAsync(currentUserId, "PromoteEmployee", "Department", emp.Id);
             }
         }
 
@@ -90,7 +95,7 @@ public class DepartmentService : IDepartmentService
 
         await _departmentRepository.CreateAsync(department);
         
-        await _activityLogService.LogAsync("CreateDepartment", $"Created department {department.Name}", currentUserId, department.Id);
+        await _activityLogService.LogAsync(currentUserId, "CreateDepartment", "Department", department.Id);
 
         return await MapToResponseAsync(department);
     }
@@ -133,7 +138,7 @@ public class DepartmentService : IDepartmentService
             {
                 emp.Role = EmployeeRole.DepartmentHead;
                 await _employeeRepository.UpdateAsync(emp.Id, emp);
-                await _activityLogService.LogAsync("PromoteEmployee", $"Automatically promoted {emp.Name} to DepartmentHead upon assigning to department {request.Name}.", currentUserId, emp.Id);
+                await _activityLogService.LogAsync(currentUserId, "PromoteEmployee", "Department", emp.Id);
             }
         }
 
@@ -144,7 +149,7 @@ public class DepartmentService : IDepartmentService
         department.UpdatedAt = DateTime.UtcNow;
 
         await _departmentRepository.UpdateAsync(id, department);
-        await _activityLogService.LogAsync("UpdateDepartment", $"Updated department {department.Name}", currentUserId, department.Id);
+        await _activityLogService.LogAsync(currentUserId, "UpdateDepartment", "Department", department.Id);
 
         return await MapToResponseAsync(department);
     }
@@ -169,7 +174,7 @@ public class DepartmentService : IDepartmentService
         department.UpdatedAt = DateTime.UtcNow;
         
         await _departmentRepository.UpdateAsync(id, department);
-        await _activityLogService.LogAsync("DeactivateDepartment", $"Deactivated department {department.Name}", currentUserId, department.Id);
+        await _activityLogService.LogAsync(currentUserId, "DeactivateDepartment", "Department", department.Id);
     }
 
     private async Task<DepartmentResponse> MapToResponseAsync(Department d)

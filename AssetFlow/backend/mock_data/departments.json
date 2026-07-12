@@ -1,0 +1,30 @@
+[
+  {
+    "id": "eb5413b105f2dcd4f577e2ff",
+    "name": "Engineering"
+  },
+  {
+    "id": "fd7435b88a9dda71c2814ea5",
+    "name": "HR"
+  },
+  {
+    "id": "d6512d5b4a4de9abaf56dbd1",
+    "name": "Finance"
+  },
+  {
+    "id": "36ce1867f22f4f5d69daa8d0",
+    "name": "IT"
+  },
+  {
+    "id": "788ea1c30f3db398b4be1d19",
+    "name": "Operations"
+  },
+  {
+    "id": "43829a489def8f8cc1a40126",
+    "name": "Sales"
+  },
+  {
+    "id": "4615ea9ee9702e2a2c10ae7b",
+    "name": "Marketing"
+  }
+]

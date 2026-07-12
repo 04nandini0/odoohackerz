@@ -11,7 +11,9 @@ obj/
 
 # Docker
 .docker/
+mongo-data/
 
 # Env
 .env
-.env.local\n
+*.local
+.env.local

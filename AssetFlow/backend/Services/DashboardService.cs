@@ -4,4 +4,4 @@ namespace AssetFlow.Services;
 public class DashboardService : IDashboardService
 {
     // TODO: implement
-}\n
+}

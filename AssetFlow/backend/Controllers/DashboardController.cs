@@ -137,7 +137,7 @@ public class DashboardController : ControllerBase
 
         var overdueBookings = bookings
             .Where(b => b.Status == BookingStatus.Ongoing && b.EndTime < DateTime.UtcNow)
-            .Select(b => new { Type = "Booking", Id = b.Id, AssetId = b.ResourceAssetId, ExpectedReturn = (DateTime?)b.EndTime, HolderId = b.UserId });
+            .Select(b => new { Type = "Booking", Id = b.Id, AssetId = b.ResourceAssetId, ExpectedReturn = (DateTime?)b.EndTime, HolderId = b.BookedBy });
 
         var combined = overdueAllocations.Cast<object>().Concat(overdueBookings.Cast<object>());
 

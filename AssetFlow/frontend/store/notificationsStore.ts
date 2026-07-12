@@ -7,4 +7,4 @@ interface NotificationsState {
 
 export const useNotificationsStore = create<NotificationsState>((set) => ({
     // TODO: implement
-}));\n
+}));

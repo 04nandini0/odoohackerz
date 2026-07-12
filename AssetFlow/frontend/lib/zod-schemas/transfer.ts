@@ -3,4 +3,4 @@ import * as z from 'zod';
 
 export const TransferSchema = z.object({
     // TODO: implement
-});\n
+});

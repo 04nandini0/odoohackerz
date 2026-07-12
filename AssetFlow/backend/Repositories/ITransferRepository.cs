@@ -5,5 +5,5 @@ namespace AssetFlow.Repositories;
 
 public interface ITransferRepository : IBaseRepository<Transfer>
 {
-    // TODO: implement
-}\n
+    
+}

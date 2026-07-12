@@ -20,6 +20,11 @@ public class EmployeeDirectoryService : IEmployeeDirectoryService
         _activityLogService = activityLogService;
     }
 
+    public async Task<Employee?> GetEmployeeByIdAsync(string id)
+    {
+        return await _employeeRepository.GetByIdAsync(id);
+    }
+
     public async Task<List<EmployeeDirectoryResponse>> GetAllEmployeesAsync(string? departmentId = null, string? roleFilter = null)
     {
         var employees = await _employeeRepository.GetAllAsync();
@@ -64,7 +69,7 @@ public class EmployeeDirectoryService : IEmployeeDirectoryService
         emp.Status = request.Status;
 
         await _employeeRepository.UpdateAsync(emp.Id, emp);
-        await _activityLogService.LogAsync("ToggleEmployeeStatus", $"Changed status of {emp.Name} from {oldStatus} to {emp.Status}", currentUserId, emp.Id);
+        await _activityLogService.LogAsync(currentUserId, "ToggleEmployeeStatus", "Employee", emp.Id);
 
         return await MapToResponseAsync(emp);
     }
@@ -85,7 +90,7 @@ public class EmployeeDirectoryService : IEmployeeDirectoryService
         emp.DepartmentId = request.DepartmentId;
 
         await _employeeRepository.UpdateAsync(emp.Id, emp);
-        await _activityLogService.LogAsync("ReassignDepartment", $"Reassigned {emp.Name} to department {(request.DepartmentId ?? "None")}", currentUserId, emp.Id);
+        await _activityLogService.LogAsync(currentUserId, "ReassignDepartment", "Employee", emp.Id);
 
         return await MapToResponseAsync(emp);
     }
@@ -111,8 +116,8 @@ public class EmployeeDirectoryService : IEmployeeDirectoryService
         emp.Role = newRole;
 
         await _employeeRepository.UpdateAsync(emp.Id, emp);
-        await _activityLogService.LogAsync("PromoteEmployee", $"Promoted {emp.Name} from {oldRole} to {newRole}", currentUserId, emp.Id, $"{{ \"oldRole\": \"{oldRole}\", \"newRole\": \"{newRole}\" }}");
-
+        var details = new Dictionary<string, string> { { "oldRole", oldRole.ToString() }, { "newRole", newRole.ToString() } };
+        await _activityLogService.LogAsync(currentUserId, "PromoteEmployee", "Employee", emp.Id, details);
         return await MapToResponseAsync(emp);
     }
 

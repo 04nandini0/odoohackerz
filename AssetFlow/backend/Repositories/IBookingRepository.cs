@@ -5,5 +5,5 @@ namespace AssetFlow.Repositories;
 
 public interface IBookingRepository : IBaseRepository<Booking>
 {
-    // TODO: implement
-}\n
+        Task<List<Booking>> GetActiveBookingsByAssetIdAsync(string assetId);
+}

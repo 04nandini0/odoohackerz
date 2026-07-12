@@ -5,6 +5,8 @@ import { useBookingStore } from "@/store/bookingStore";
 import { useAssetStore } from "@/store/assetStore";
 import ResourceCalendar from "@/components/bookings/ResourceCalendar";
 import BookingForm from "@/components/bookings/BookingForm";
+import { motion, AnimatePresence } from "framer-motion";
+import { Plus, Filter } from "lucide-react";
 
 export default function BookingsPage() {
   const { bookings, fetchAll: fetchBookings } = useBookingStore();
@@ -24,46 +26,69 @@ export default function BookingsPage() {
     : bookings.filter(b => b.resourceAssetId === selectedResource);
 
   return (
-    <div className="max-w-7xl mx-auto py-8 px-4">
-      <div className="flex justify-between items-center mb-8">
+    <div className="p-8 max-w-7xl mx-auto space-y-8 min-h-full">
+      <motion.div 
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
+      >
         <div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-400 to-teal-500 bg-clip-text text-transparent">
-            Resource Booking
+          <h1 className="text-3xl font-bold text-white mb-1 tracking-tight">
+            Resource Bookings
           </h1>
-          <p className="text-slate-400 mt-1">Schedule and manage bookable assets like conference rooms.</p>
+          <p className="text-zinc-400">Schedule and manage bookable assets and conference rooms.</p>
         </div>
+        
         <button 
           onClick={() => setShowForm(true)}
-          className="bg-teal-600 hover:bg-teal-500 px-4 py-2 rounded-lg font-medium shadow-lg shadow-teal-900/20 transition-all"
+          className="bg-primary-600 hover:bg-primary-500 text-white rounded-xl px-5 py-2.5 font-medium flex items-center justify-center gap-2 transition-all shadow-lg shadow-primary-500/20"
         >
-          + New Booking
+          <Plus className="w-5 h-5" />
+          <span>New Booking</span>
         </button>
-      </div>
+      </motion.div>
 
-      <div className="mb-6 flex items-center gap-4">
-        <label className="text-sm font-medium text-slate-300">Filter by Resource:</label>
-        <select 
-          value={selectedResource}
-          onChange={(e) => setSelectedResource(e.target.value)}
-          className="bg-slate-800 border border-slate-700 rounded px-4 py-2"
-        >
-          <option value="All">All Resources</option>
-          {bookableAssets.map(a => (
-            <option key={a.id} value={a.id}>{a.name} ({a.tag})</option>
-          ))}
-        </select>
-      </div>
+      <motion.div 
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="glass-panel p-6 space-y-6"
+      >
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-white/5 pb-6">
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500 pointer-events-none" />
+              <select 
+                value={selectedResource}
+                onChange={(e) => setSelectedResource(e.target.value)}
+                className="w-full sm:w-64 bg-surface-100/50 border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 transition-all outline-none appearance-none"
+              >
+                <option value="All">All Resources</option>
+                {bookableAssets.map(a => (
+                  <option key={a.id} value={a.id}>{a.name} ({a.tag})</option>
+                ))}
+              </select>
+            </div>
+          </div>
+          
+          <div className="flex flex-wrap gap-4 text-xs font-medium text-zinc-400 bg-surface-100/30 px-4 py-2 rounded-xl border border-white/5">
+            <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.6)]"></div> Upcoming</div>
+            <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]"></div> Ongoing</div>
+            <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full bg-zinc-500 shadow-[0_0_8px_rgba(113,113,122,0.6)]"></div> Completed</div>
+            <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]"></div> Cancelled</div>
+          </div>
+        </div>
 
-      <div className="mb-4 flex gap-4 text-xs font-medium text-slate-400">
-        <div className="flex items-center gap-1"><div className="w-3 h-3 rounded-full bg-indigo-900 border border-indigo-700"></div> Upcoming</div>
-        <div className="flex items-center gap-1"><div className="w-3 h-3 rounded-full bg-emerald-900 border border-emerald-700"></div> Ongoing</div>
-        <div className="flex items-center gap-1"><div className="w-3 h-3 rounded-full bg-slate-700 border border-slate-600"></div> Completed</div>
-        <div className="flex items-center gap-1"><div className="w-3 h-3 rounded-full bg-red-900 border border-red-700"></div> Cancelled</div>
-      </div>
+        <div className="bg-surface-100/20 rounded-xl p-1 border border-white/5">
+          <ResourceCalendar bookings={filteredBookings} />
+        </div>
+      </motion.div>
 
-      <ResourceCalendar bookings={filteredBookings} />
-
-      {showForm && <BookingForm onClose={() => setShowForm(false)} />}
+      <AnimatePresence>
+        {showForm && (
+          <BookingForm onClose={() => setShowForm(false)} />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

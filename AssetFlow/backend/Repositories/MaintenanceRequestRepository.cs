@@ -5,5 +5,7 @@ namespace AssetFlow.Repositories;
 
 public class MaintenanceRequestRepository : BaseRepository<MaintenanceRequest>, IMaintenanceRequestRepository
 {
-    // TODO: implement
-}\n
+    
+    public MaintenanceRequestRepository(MongoDB.Driver.IMongoDatabase database) : base(database, "MaintenanceRequests") { }
+
+}

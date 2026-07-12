@@ -4,4 +4,4 @@ namespace AssetFlow.Services;
 public interface IOrganizationService
 {
     // TODO: implement
-}\n
+}

@@ -5,5 +5,5 @@ namespace AssetFlow.Repositories;
 
 public interface IActivityLogRepository : IBaseRepository<ActivityLog>
 {
-    // TODO: implement
-}\n
+    
+}

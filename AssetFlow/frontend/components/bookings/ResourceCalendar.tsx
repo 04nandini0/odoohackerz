@@ -60,7 +60,7 @@ export default function ResourceCalendar({ bookings }: { bookings: Booking[] }) 
   };
 
   return (
-    <div className="h-[600px] bg-slate-900 rounded-lg border border-slate-700 p-4 shadow-xl custom-calendar">
+    <div className="h-[600px] bg-transparent rounded-lg p-2 custom-calendar">
       <Calendar
         localizer={localizer}
         events={events}

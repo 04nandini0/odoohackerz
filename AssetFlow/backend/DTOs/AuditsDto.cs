@@ -9,4 +9,4 @@ public class AuditsRequestDto
 public class AuditsResponseDto
 {
     // TODO: implement
-}\n
+}
